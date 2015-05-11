@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="barcode_scan_failed">Vonalkód beolvasás nem sikerült vagy visszavonva.</string>
+    <string name="scan_barcode">Vonalkód beolvasás</string>
+</resources>
