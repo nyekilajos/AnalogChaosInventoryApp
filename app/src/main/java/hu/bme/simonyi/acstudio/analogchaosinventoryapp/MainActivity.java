@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.inject.Inject;
+
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.InjectView;
 
@@ -17,6 +19,9 @@ public class MainActivity extends RoboActionBarActivity {
     @InjectView(R.id.scan_barcode)
     private Button scanBarcodeButton;
 
+    @Inject
+    private BarcodeScanHelper barcodeScanHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,9 +30,11 @@ public class MainActivity extends RoboActionBarActivity {
         scanBarcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                intent.setPackage("com.google.zxing.client.android");
-                startActivityForResult(intent, REQUEST_BARCODE_SCAN);
+                if (barcodeScanHelper.isZxingInstalled()) {
+                    startActivityForResult(barcodeScanHelper.getBarcodeScanIntent(), REQUEST_BARCODE_SCAN);
+                } else {
+                    barcodeScanHelper.showPlaystore();
+                }
             }
         });
     }
@@ -36,15 +43,7 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_BARCODE_SCAN) {
-            processBarcodeScanResult(resultCode, data);
-        }
-    }
-
-    private void processBarcodeScanResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(this, data.getStringExtra("SCAN_RESULT"), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getString(R.string.barcode_scan_failed), Toast.LENGTH_LONG).show();
+            barcodeScanHelper.processBarcodeScanResult(resultCode, data);
         }
     }
 }
