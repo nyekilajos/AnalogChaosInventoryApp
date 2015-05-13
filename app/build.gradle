@@ -20,6 +20,11 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+    }
 }
 
 dependencies {
@@ -27,4 +32,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.+'
+    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M1'
+    compile 'com.google.code.gson:gson:2.2.4'
 }
