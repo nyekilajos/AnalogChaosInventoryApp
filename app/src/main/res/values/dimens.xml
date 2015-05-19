@@ -12,5 +12,6 @@
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">22sp</dimen>
     <dimen name="text_size_extra_large">28sp</dimen>
+    <dimen name="drawer_size">240dp</dimen>
 
 </resources>

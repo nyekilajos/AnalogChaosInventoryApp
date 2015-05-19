@@ -33,5 +33,6 @@ dependencies {
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.+'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M1'
-    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.android.support:recyclerview-v7:21.0.+'
 }

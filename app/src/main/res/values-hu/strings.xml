@@ -2,4 +2,11 @@
 <resources>
     <string name="barcode_scan_failed">Vonalkód beolvasás nem sikerült vagy visszavonva.</string>
     <string name="scan_barcode">Vonalkód beolvasás</string>
+    <string name="example_user_name">Kovács János</string>
+    <string name="navigation_scan">Vonalkód</string>
+    <string name="navigation_about">Az appról</string>
+    <string name="navigation_help_and_tips">Segítség és tippek</string>
+    <string name="navigation_inventory">Eszközeink</string>
+    <string name="navigation_rental_history">Korábbi kölcsönzések</string>
+    <string name="navigation_settings">Beállítások</string>
 </resources>
