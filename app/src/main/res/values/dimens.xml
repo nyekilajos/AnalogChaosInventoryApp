@@ -5,8 +5,9 @@
     <dimen name="touchable_item_minimal_size">48dp</dimen>
     <dimen name="ui_padding_small">4dp</dimen>
     <dimen name="ui_padding_large">8dp</dimen>
-    <dimen name="ui_margin_small">32dp</dimen>
-    <dimen name="ui_margin_large">40dp</dimen>
+    <dimen name="ui_padding_extra_large">16dp</dimen>
+    <dimen name="layout_margin_small">32dp</dimen>
+    <dimen name="layout_margin_large">40dp</dimen>
     <dimen name="text_size_tiny">12sp</dimen>
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
