@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.inject.Inject;
 
@@ -29,6 +30,9 @@ public class NavigationDrawerFragment extends RoboFragment {
 
     @InjectView(R.id.drawerList)
     private RecyclerView recyclerView;
+
+    @InjectView(R.id.nav_header_container)
+    private LinearLayout navigationDrawerHeader;
 
     @Inject
     private NavigationDrawerAdapter navigationDrawerAdapter;
@@ -49,6 +53,12 @@ public class NavigationDrawerFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView.setAdapter(navigationDrawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        navigationDrawerHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Do nothing
+            }
+        });
     }
 
     public void setDrawerItemSelectedListener(DrawerItemSelectedListener listener) {
