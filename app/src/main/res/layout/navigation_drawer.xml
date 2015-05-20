@@ -22,7 +22,7 @@
                 android:id="@+id/profile_picture"
                 android:layout_width="@dimen/touchable_item_minimal_size"
                 android:layout_height="@dimen/touchable_item_minimal_size"
-                android:src="@drawable/ic_launcher"
+                android:src="@drawable/aclogo_feher_small"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
                 android:layout_marginRight="@dimen/layout_margin_small"/>
