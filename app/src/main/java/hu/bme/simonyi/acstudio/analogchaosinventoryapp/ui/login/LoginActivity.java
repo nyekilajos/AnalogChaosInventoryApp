@@ -2,6 +2,8 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
@@ -47,18 +49,75 @@ public class LoginActivity extends RoboActivity {
 
     private AnimationRunnable animationRunnable;
 
+    private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            localSettingsService.setEmailAddress(emailEditText.getText().toString());
+
+            emailEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    emailEditText.setError(null);
+                }
+            });
+
+            passwordEdittext.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    passwordEdittext.setError(null);
+                }
+            });
+
+            boolean loginValid = true;
+            if (!isEmailValid()) {
+                emailEditText.setError(getString(R.string.email_validation_error));
+                loginValid = false;
+            }
+            if (!isPasswordNotEmpty()) {
+                passwordEdittext.setError(getString(R.string.password_validation_error));
+                loginValid = false;
+            }
+            if (loginValid) {
+                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+            }
+        }
+    };
+
+    private boolean isPasswordNotEmpty() {
+        return !passwordEdittext.getText().toString().isEmpty();
+    }
+
+    private boolean isEmailValid() {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText().toString()).matches();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         animationRunnable = new AnimationRunnable();
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                localSettingsService.setEmailAddress(emailEditText.getText().toString());
-                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
-            }
-        });
+        loginButton.setOnClickListener(onLoginClickListener);
     }
 
     @Override

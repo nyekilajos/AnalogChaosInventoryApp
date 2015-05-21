@@ -18,4 +18,6 @@
     <string name="email">E-mail address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="email_validation_error">Please add a valid e-mail address.</string>
+    <string name="password_validation_error">Password can not be empty.</string>
 </resources>

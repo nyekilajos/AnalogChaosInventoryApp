@@ -12,4 +12,6 @@
     <string name="email">E-mail cím</string>
     <string name="password">Jelszó</string>
     <string name="login">Bejelentkezés</string>
+    <string name="email_validation_error">Adj meg egy érvényes e-mail címet!</string>
+    <string name="password_validation_error">A jelszó nem lehet üres.</string>
 </resources>

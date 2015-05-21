@@ -29,6 +29,7 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:padding="@dimen/ui_padding_large"
+            android:inputType="textEmailAddress"
             android:background="@color/bright_foreground_inverse_material_light"
             android:hint="@string/email"/>
 
