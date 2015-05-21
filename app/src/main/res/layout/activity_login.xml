@@ -30,7 +30,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:padding="@dimen/ui_padding_large"
             android:inputType="textEmailAddress"
-            android:background="@color/bright_foreground_inverse_material_light"
+            android:background="@color/light_text"
             android:hint="@string/email"/>
 
         <EditText
@@ -44,7 +44,7 @@
             android:padding="@dimen/ui_padding_large"
             android:textSize="@dimen/text_size_medium"
             android:inputType="textPassword"
-            android:background="@color/bright_foreground_inverse_material_light"
+            android:background="@color/light_text"
             android:hint="@string/password"/>
 
         <Button
@@ -57,7 +57,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@color/accent"
             android:text="@string/login"
-            android:textColor="@color/abc_primary_text_material_dark"
+            android:textColor="@color/light_text"
             android:textSize="@dimen/text_size_medium"/>
 
     </LinearLayout>
