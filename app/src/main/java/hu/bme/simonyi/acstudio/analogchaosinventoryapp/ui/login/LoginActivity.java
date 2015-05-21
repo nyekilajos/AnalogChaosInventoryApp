@@ -9,7 +9,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.inject.Inject;
+
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivityIntentFactory;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
@@ -39,6 +42,9 @@ public class LoginActivity extends RoboActivity {
     @InjectView(R.id.btn_login)
     private Button loginButton;
 
+    @Inject
+    private LocalSettingsService localSettingsService;
+
     private AnimationRunnable animationRunnable;
 
     @Override
@@ -49,6 +55,7 @@ public class LoginActivity extends RoboActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                localSettingsService.setEmailAddress(emailEditText.getText().toString());
                 startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
             }
         });

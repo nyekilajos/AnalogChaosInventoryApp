@@ -8,6 +8,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
+        <meta-data android:name="roboguice.modules" android:value="hu.bme.simonyi.acstudio.analogchaosinventoryapp.inject.AnalogChaosModule"/>
+
         <activity
             android:name=".ui.home.HomeActivity" android:screenOrientation="portrait">
 

@@ -12,10 +12,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -34,13 +36,14 @@ public class NavigationDrawerFragment extends RoboFragment {
     @InjectView(R.id.nav_header_container)
     private LinearLayout navigationDrawerHeader;
 
+    @InjectView(R.id.user_name)
+    private TextView userName;
+
+    @Inject
+    private LocalSettingsService localSettingsService;
+
     @Inject
     private NavigationDrawerAdapter navigationDrawerAdapter;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -53,6 +56,7 @@ public class NavigationDrawerFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView.setAdapter(navigationDrawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        userName.setText(localSettingsService.getEmailAddress());
         navigationDrawerHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
