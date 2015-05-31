@@ -14,8 +14,14 @@ import android.widget.LinearLayout;
 import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.Logger;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.LoggerFactory;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LoginServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivityIntentFactory;
+import roboguice.RoboGuice;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 
@@ -28,6 +34,8 @@ public class LoginActivity extends RoboActivity {
 
     private static final int ANIMATION_FRAME_DELAY = 40;
     private static final int ANIMATION_TIME_MS = 1000;
+
+    private static final Logger LOGGER = LoggerFactory.createLogger(LoginActivity.class);
 
     @InjectView(R.id.ac_logo_login)
     private ImageView acLogoImage;
@@ -99,10 +107,39 @@ public class LoginActivity extends RoboActivity {
                 loginValid = false;
             }
             if (loginValid) {
-                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+                startLoginCommunication();
             }
         }
     };
+
+    private GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse> statusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse>() {
+        @Override
+        public void onPreExecute() throws Exception {
+
+        }
+
+        @Override
+        public void onSuccess(LoginResponse loginResponse) throws Exception {
+            LOGGER.debug("Login successful");
+            startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+        }
+
+        @Override
+        public void onThrowable(Throwable t) throws RuntimeException {
+            LOGGER.error(t.toString());
+        }
+
+        @Override
+        public void onFinally() throws RuntimeException {
+
+        }
+    };
+
+    private void startLoginCommunication() {
+        LoginServerCommunicationTask loginTask = RoboGuice.getInjector(this).getInstance(LoginServerCommunicationTask.class);
+        loginTask.setStatusHandler(statusHandler);
+        loginTask.login(emailEditText.getText().toString(), passwordEdittext.getText().toString());
+    }
 
     private boolean isPasswordNotEmpty() {
         return !passwordEdittext.getText().toString().isEmpty();
