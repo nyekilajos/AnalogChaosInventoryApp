@@ -142,6 +142,7 @@ public class LoginActivity extends RoboActivity {
             LOGGER.debug("Login request successful");
             if (loginResponse.isSuccess()) {
                 startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+                finish();
             } else {
                 emailEditText.setError(getString(R.string.wrong_email_or_pass));
                 passwordEdittext.setError(getString(R.string.wrong_email_or_pass));
@@ -183,6 +184,7 @@ public class LoginActivity extends RoboActivity {
             initForLogin();
         } else {
             startActivity(HomeActivityIntentFactory.createHomeActivityIntent(this));
+            finish();
         }
     }
 
