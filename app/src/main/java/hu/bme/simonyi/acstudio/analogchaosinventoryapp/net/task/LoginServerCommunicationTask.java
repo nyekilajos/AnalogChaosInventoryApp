@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 
 /**
  * Async task for login.
@@ -20,8 +21,10 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
 public class LoginServerCommunicationTask extends GenericServerCommunicationTask<LoginRequest, LoginResponse> {
 
     private static final String AC_API_LOGIN_METHOD = "/login";
-
     private static final String REMEMBERME = "no";
+
+    @Inject
+    private LocalSettingsService localSettingsService;
 
     @Inject
     protected LoginServerCommunicationTask(Context context) {
@@ -42,6 +45,12 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         setRequestEntity(new HttpEntity<>(loginRequest, headers));
-        this.execute();
+        execute();
+    }
+
+    @Override
+    protected void onSuccess(LoginResponse t) throws Exception {
+        localSettingsService.setSessionCode(t.getResult());
+        super.onSuccess(t);
     }
 }

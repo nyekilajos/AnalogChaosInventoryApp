@@ -7,8 +7,18 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings;
  */
 public interface LocalSettingsService {
 
+    void reset();
+
     String getEmailAddress();
 
     void setEmailAddress(String emailAddress);
+
+    String getPassword();
+
+    void setPassword(String password);
+
+    String getSessionCode();
+
+    void setSessionCode(String sessionCode);
 
 }

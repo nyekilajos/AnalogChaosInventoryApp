@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.google.inject.Inject;
 
@@ -20,9 +21,10 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LoginServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivityIntentFactory;
-import roboguice.RoboGuice;
 import roboguice.activity.RoboActivity;
+import roboguice.inject.ContextScopedProvider;
 import roboguice.inject.InjectView;
 
 /**
@@ -52,8 +54,16 @@ public class LoginActivity extends RoboActivity {
     @InjectView(R.id.btn_login)
     private Button loginButton;
 
+    @InjectView(R.id.login_loading_progressbar)
+    private ProgressBar loginProgressBar;
+
+    @Inject
+    private ContextScopedProvider<LoginServerCommunicationTask> loginServerCommunicationTaskProvider;
+
     @Inject
     private LocalSettingsService localSettingsService;
+    @Inject
+    private DialogFactory dialogFactory;
 
     private AnimationRunnable animationRunnable;
 
@@ -115,28 +125,37 @@ public class LoginActivity extends RoboActivity {
     private GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse> statusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse>() {
         @Override
         public void onPreExecute() throws Exception {
-
+            loginButton.setVisibility(View.GONE);
+            loginProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onSuccess(LoginResponse loginResponse) throws Exception {
-            LOGGER.debug("Login successful");
-            startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+            LOGGER.debug("Login request successful");
+            if (loginResponse.isSuccess()) {
+                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+            } else {
+                emailEditText.setError(getString(R.string.wrong_email_or_pass));
+                passwordEdittext.setError(getString(R.string.wrong_email_or_pass));
+                dialogFactory.createAlertDialog(getString(R.string.wrong_credentials_alert)).show();
+            }
         }
 
         @Override
         public void onThrowable(Throwable t) throws RuntimeException {
             LOGGER.error(t.toString());
+            dialogFactory.createAlertDialog(getString(R.string.unknown_communication_error)).show();
         }
 
         @Override
         public void onFinally() throws RuntimeException {
-
+            loginProgressBar.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
         }
     };
 
     private void startLoginCommunication() {
-        LoginServerCommunicationTask loginTask = RoboGuice.getInjector(this).getInstance(LoginServerCommunicationTask.class);
+        LoginServerCommunicationTask loginTask = loginServerCommunicationTaskProvider.get(this);
         loginTask.setStatusHandler(statusHandler);
         loginTask.login(emailEditText.getText().toString(), passwordEdittext.getText().toString());
     }

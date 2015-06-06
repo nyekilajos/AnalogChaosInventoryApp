@@ -20,4 +20,9 @@
     <string name="login">Login</string>
     <string name="email_validation_error">Please add a valid e-mail address.</string>
     <string name="password_validation_error">Password can not be empty.</string>
+    <string name="menu_logout">Logout</string>
+    <string name="ok">OK</string>
+    <string name="unknown_communication_error">Unknown error occurred. Please try again later.</string>
+    <string name="wrong_email_or_pass">Wrong e-mail or password.</string>
+    <string name="wrong_credentials_alert">Wrong e-mail or password. Please try again.</string>
 </resources>

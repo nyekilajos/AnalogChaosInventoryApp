@@ -14,4 +14,9 @@
     <string name="login">Bejelentkezés</string>
     <string name="email_validation_error">Adj meg egy érvényes e-mail címet!</string>
     <string name="password_validation_error">A jelszó nem lehet üres.</string>
+    <string name="menu_logout">Kijelentkezés</string>
+    <string name="ok">Rendben</string>
+    <string name="unknown_communication_error">Ismeretlen hiba. Próbáld meg később!</string>
+    <string name="wrong_email_or_pass">Hibás e-mail vagy jelszó.</string>
+    <string name="wrong_credentials_alert">Hibás e-mail vagy jelszó. Próbáld meg újra.</string>
 </resources>
