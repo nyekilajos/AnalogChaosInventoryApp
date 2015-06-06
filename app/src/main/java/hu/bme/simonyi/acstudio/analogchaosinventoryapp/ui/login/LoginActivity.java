@@ -1,11 +1,13 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login;
 
+import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +58,9 @@ public class LoginActivity extends RoboActivity {
 
     @InjectView(R.id.login_loading_progressbar)
     private ProgressBar loginProgressBar;
+
+    @Inject
+    private InputMethodManager inputMethodManager;
 
     @Inject
     private ContextScopedProvider<LoginServerCommunicationTask> loginServerCommunicationTaskProvider;
@@ -117,6 +122,9 @@ public class LoginActivity extends RoboActivity {
                 loginValid = false;
             }
             if (loginValid) {
+                if (getCurrentFocus() != null) {
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
                 startLoginCommunication();
             }
         }
@@ -171,6 +179,14 @@ public class LoginActivity extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (localSettingsService.getSessionCode().isEmpty()) {
+            initForLogin();
+        } else {
+            startActivity(HomeActivityIntentFactory.createHomeActivityIntent(this));
+        }
+    }
+
+    private void initForLogin() {
         setContentView(R.layout.activity_login);
         animationRunnable = new AnimationRunnable();
         loginButton.setOnClickListener(onLoginClickListener);
