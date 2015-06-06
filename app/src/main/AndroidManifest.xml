@@ -7,7 +7,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/aclogo_feher_szurke_small"
+        android:icon="@drawable/aclogo_feher_zold_dark_small"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
