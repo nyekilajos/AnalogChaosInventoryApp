@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutResponse;
@@ -33,17 +31,20 @@ public class LogoutServerCommunicationTask extends GenericServerCommunicationTas
         setServerUrl(AC_API_ENDPONT + AC_API_VERSION + AC_API_ACCOUNT_MODULE + AC_API_LOGOUT_METHOD);
     }
 
+    /**
+     * Logs out the already authenticated user. If logout was successful, this method deletes the user database.
+     */
     public void logout() {
         LogoutRequest logoutRequest = new LogoutRequest(localSettingsService.getSessionCode());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        setRequestEntity(new HttpEntity<>(logoutRequest, headers));
+        setRequestEntity(new HttpEntity<>(logoutRequest, getJsonHttpHeaders()));
         execute();
     }
 
     @Override
     protected void onSuccess(LogoutResponse t) throws Exception {
-        localSettingsService.reset();
+        if (t.isSuccess()) {
+            localSettingsService.reset();
+        }
         super.onSuccess(t);
     }
 }

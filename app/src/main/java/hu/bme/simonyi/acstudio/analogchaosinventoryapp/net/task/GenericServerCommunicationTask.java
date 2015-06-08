@@ -2,13 +2,20 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task;
 
 import android.content.Context;
 
+import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.util.RoboAsyncTask;
 
@@ -23,6 +30,7 @@ public class GenericServerCommunicationTask<T, U> extends RoboAsyncTask<U> {
     public static final String AC_API_VERSION = "/1.0";
 
     public static final String AC_API_ACCOUNT_MODULE = "/account";
+    public static final String AC_API_ITEMS_MODULE = "/items";
 
     private String serverUrl;
     private HttpMethod httpMethod;
@@ -56,12 +64,31 @@ public class GenericServerCommunicationTask<T, U> extends RoboAsyncTask<U> {
         this.statusHandler = statusHandler;
     }
 
+    /**
+     * Creates appropriate http headers for JSON communication.
+     *
+     * @return HttpHeaders for JSON
+     */
+    protected HttpHeaders getJsonHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
     @Override
     public U call() throws Exception {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
+        setupRestTemplate(restTemplate);
         ResponseEntity<U> response = restTemplate.exchange(serverUrl, httpMethod, requestEntity, responseType);
         return response.getBody();
+    }
+
+    private void setupRestTemplate(RestTemplate restTemplate) {
+        GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
+        converter.setGson(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create());
+        List<HttpMessageConverter<?>> converterList = new ArrayList<>();
+        converterList.add(converter);
+        restTemplate.setMessageConverters(converterList);
     }
 
     @Override

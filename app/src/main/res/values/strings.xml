@@ -25,4 +25,5 @@
     <string name="unknown_communication_error">Unknown error occurred. Please try again later.</string>
     <string name="wrong_email_or_pass">Wrong e-mail or password.</string>
     <string name="wrong_credentials_alert">Wrong e-mail or password. Please try again.</string>
+    <string name="error_items_list">Inventory database update failed. Probably there are problems with your network connection, the database on your phone can not be read. Please try again later.</string>
 </resources>

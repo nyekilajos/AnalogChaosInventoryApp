@@ -3,6 +3,8 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Generic DTO for Server Response
  *
@@ -10,9 +12,13 @@ import android.os.Parcelable;
  */
 public abstract class GenericServerResponse<T> implements Parcelable {
 
+    @Expose
     private boolean success;
+    @Expose
     private int code;
+    @Expose
     private String text;
+    @Expose
     private T result;
 
     public boolean isSuccess() {

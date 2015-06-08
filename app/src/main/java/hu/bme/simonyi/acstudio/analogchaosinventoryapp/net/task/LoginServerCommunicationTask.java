@@ -42,9 +42,7 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
      */
     public void login(String email, String password) {
         LoginRequest loginRequest = new LoginRequest(email, password, REMEMBERME);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        setRequestEntity(new HttpEntity<>(loginRequest, headers));
+        setRequestEntity(new HttpEntity<>(loginRequest, getJsonHttpHeaders()));
         execute();
     }
 
