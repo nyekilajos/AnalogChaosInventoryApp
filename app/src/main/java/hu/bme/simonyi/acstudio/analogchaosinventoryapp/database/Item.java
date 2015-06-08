@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -31,38 +32,54 @@ public class Item implements Parcelable {
         }
     };
 
+    @Expose
     @DatabaseField(id = true)
     private int id;
 
+    @Expose
     @DatabaseField
     private String name;
 
+    @Expose
     @DatabaseField
     private int category;
 
+    @Expose
     @DatabaseField
     private String categoryText;
 
+    @Expose
     @DatabaseField
     private int quantity;
 
-    @DatabaseField
+    @DatabaseField(foreign = true)
+    private Item parentItem;
+
+    @Expose
     private int parent;
 
-    @DatabaseField
+    @Expose
+    @DatabaseField(unique = true)
     private String barcode;
 
+    @Expose
     @DatabaseField
     private String comment;
 
+    @Expose
     @DatabaseField
     private int broken;
 
-    @Expose
-    @ForeignCollectionField
+    @ForeignCollectionField(eager = true)
     private ForeignCollection<Item> childrenItems;
 
+    @Expose
     private ArrayList<Item> children;
+
+    @Inject
+    public Item() {
+
+    }
 
     public Item(Parcel in) {
         id = in.readInt();
@@ -71,6 +88,7 @@ public class Item implements Parcelable {
         categoryText = in.readString();
         quantity = in.readInt();
         parent = in.readInt();
+        parentItem = new Item();
         barcode = in.readString();
         comment = in.readString();
         broken = in.readInt();
@@ -81,6 +99,8 @@ public class Item implements Parcelable {
         int count = in.readInt();
         children = new ArrayList<>();
         for (int i = 0; i < count; i++) {
+            Item child = new Item(in);
+            child.parentItem = this;
             children.add(new Item(in));
         }
     }
