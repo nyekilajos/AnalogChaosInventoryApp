@@ -43,6 +43,8 @@ public class InventoryFragment extends RoboFragment {
     @Inject
     private CouchbaseLiteHelper couchbaseLiteHelper;
 
+    private LinearLayout contentRootLayout;
+
     @Inject
     private ContextScopedProvider<ItemsListServerCommunicationTask> itemsListServerCommunicationTaskProvider;
 
@@ -54,6 +56,7 @@ public class InventoryFragment extends RoboFragment {
 
         @Override
         public void onSuccess(ItemsListResponse itemsListResponse) throws Exception {
+            refreshTreeView();
 
         }
 
@@ -72,6 +75,13 @@ public class InventoryFragment extends RoboFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_inventory, container, false);
+        contentRootLayout = (LinearLayout) view.findViewById(R.id.inventory_fragment_content);
+        refreshTreeView();
+        return view;
+    }
+
+    private List<Item> getItemsFromDatabase() {
         List<Item> items = null;
         try {
             items = couchbaseLiteHelper.getItemsList();
@@ -79,12 +89,13 @@ public class InventoryFragment extends RoboFragment {
             e.printStackTrace();
             items = new ArrayList<>();
         }
-        AndroidTreeView tView = new AndroidTreeView(getActivity(), treeCreator.createTree(items));
+        return items;
+    }
 
-        View view = inflater.inflate(R.layout.fragment_inventory, container, false);
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.inventory_fragment_content);
-        linearLayout.addView(tView.getView());
-        return view;
+    private void refreshTreeView() {
+        AndroidTreeView treeView = new AndroidTreeView(getActivity(), treeCreator.createTree(getItemsFromDatabase()));
+        contentRootLayout.removeAllViews();
+        contentRootLayout.addView(treeView.getView());
     }
 
     @Override
