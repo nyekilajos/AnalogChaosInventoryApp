@@ -35,29 +35,28 @@ public class TreeCreator {
     public TreeNode createTree(List<Item> items) {
         TreeNode root = TreeNode.root();
         for (Item item : items) {
-            attachAvailableChildren(root, item);
+            attachAvailableChildren(root, item, 0);
         }
         return root;
     }
 
-    private void attachAvailableChildren(TreeNode root, Item item) {
+    private void attachAvailableChildren(TreeNode root, Item item, int depthLevel) {
         if (root != null && item != null) {
-            TreeNode itemNode = createTreeNode(item);
+            TreeNode itemNode = createTreeNode(item, depthLevel);
             if (item.getChildren() != null && !item.getChildren().isEmpty()) {
                 for (Item child : item.getChildren()) {
-                    itemNode.addChild(createTreeNode(child));
-                    attachAvailableChildren(itemNode, child);
+                    attachAvailableChildren(itemNode, child, depthLevel + 1);
                 }
             }
             root.addChild(itemNode);
         }
     }
 
-    private TreeNode createTreeNode(Item item) {
-        return new TreeNode(createHolderFromItem(item)).setViewHolder(inventoryViewHolderProvider.get(context));
+    private TreeNode createTreeNode(Item item, int level) {
+        return new TreeNode(createHolderFromItem(item, level)).setViewHolder(inventoryViewHolderProvider.get(context));
     }
 
-    private InventoryViewHolder.InventoryRow createHolderFromItem(Item item) {
+    private InventoryViewHolder.InventoryRow createHolderFromItem(Item item, int level) {
         InventoryViewHolder.InventoryRow inventoryRow = new InventoryViewHolder.InventoryRow();
         inventoryRow.id = Integer.toString(item.getId());
         inventoryRow.name = item.getName();
@@ -65,6 +64,8 @@ public class TreeCreator {
         inventoryRow.quantity = Integer.toString(item.getQuantity());
         inventoryRow.barcode = item.getBarcode();
         inventoryRow.comment = item.getComment();
+        inventoryRow.hasChildren = item.getChildren() != null && !item.getChildren().isEmpty();
+        inventoryRow.level = level;
         return inventoryRow;
     }
 }

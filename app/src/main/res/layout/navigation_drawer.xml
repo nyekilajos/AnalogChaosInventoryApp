@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/profile_picture"
-                android:layout_width="@dimen/touchable_item_minimal_size"
-                android:layout_height="@dimen/touchable_item_minimal_size"
+                android:layout_width="@dimen/touchable_item_size_large"
+                android:layout_height="@dimen/touchable_item_size_large"
                 android:src="@drawable/aclogo_feher_small"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
