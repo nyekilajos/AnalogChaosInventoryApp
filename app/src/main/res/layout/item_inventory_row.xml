@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/items_row_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+    <TextView
+        android:id="@+id/items_row_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+    <TextView
+        android:id="@+id/items_row_category_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+    <TextView
+        android:id="@+id/items_row_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+    <TextView
+        android:id="@+id/items_row_barcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+    <TextView
+        android:id="@+id/items_row_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:layout_margin="8dp"
+        android:padding="@dimen/ui_padding_large"
+        android:background="@color/accent"/>
+
+</LinearLayout>

@@ -4,20 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
-import com.google.inject.Inject;
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
 
 /**
- * Database table class for inventory item objects.
+ * Class for storing inventory item objects.
  *
  * @author Lajos Nyeki
  */
-@DatabaseTable(tableName = "items")
 public class Item implements Parcelable {
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -33,50 +27,35 @@ public class Item implements Parcelable {
     };
 
     @Expose
-    @DatabaseField(id = true)
     private int id;
 
     @Expose
-    @DatabaseField
     private String name;
 
     @Expose
-    @DatabaseField
     private int category;
 
     @Expose
-    @DatabaseField
-    private String categoryText;
+    private String category_text;
 
     @Expose
-    @DatabaseField
     private int quantity;
-
-    @DatabaseField(foreign = true)
-    private Item parentItem;
 
     @Expose
     private int parent;
 
     @Expose
-    @DatabaseField(unique = true)
     private String barcode;
 
     @Expose
-    @DatabaseField
     private String comment;
 
     @Expose
-    @DatabaseField
     private int broken;
-
-    @ForeignCollectionField(eager = true)
-    private ForeignCollection<Item> childrenItems;
 
     @Expose
     private ArrayList<Item> children;
 
-    @Inject
     public Item() {
 
     }
@@ -85,10 +64,10 @@ public class Item implements Parcelable {
         id = in.readInt();
         name = in.readString();
         category = in.readInt();
-        categoryText = in.readString();
+        category_text = in.readString();
         quantity = in.readInt();
         parent = in.readInt();
-        parentItem = new Item();
+        //parentItem = new Item();
         barcode = in.readString();
         comment = in.readString();
         broken = in.readInt();
@@ -100,8 +79,7 @@ public class Item implements Parcelable {
         children = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Item child = new Item(in);
-            child.parentItem = this;
-            children.add(new Item(in));
+            children.add(child);
         }
     }
 
@@ -115,7 +93,7 @@ public class Item implements Parcelable {
         dest.writeInt(id);
         dest.writeString(name);
         dest.writeInt(category);
-        dest.writeString(categoryText);
+        dest.writeString(category_text);
         dest.writeInt(quantity);
         dest.writeInt(parent);
         dest.writeString(barcode);
@@ -155,12 +133,12 @@ public class Item implements Parcelable {
         this.category = category;
     }
 
-    public String getCategoryText() {
-        return categoryText;
+    public String getCategory_text() {
+        return category_text;
     }
 
-    public void setCategoryText(String categoryText) {
-        this.categoryText = categoryText;
+    public void setCategory_text(String category_text) {
+        this.category_text = category_text;
     }
 
     public int getQuantity() {
@@ -201,14 +179,6 @@ public class Item implements Parcelable {
 
     public void setBroken(int broken) {
         this.broken = broken;
-    }
-
-    public ForeignCollection<Item> getChildrenItems() {
-        return childrenItems;
-    }
-
-    public void setChildrenItems(ForeignCollection<Item> childrenItems) {
-        this.childrenItems = childrenItems;
     }
 
     public ArrayList<Item> getChildren() {
