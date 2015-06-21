@@ -2,6 +2,7 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.inventory;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
 public class InventoryViewHolder extends TreeNode.BaseNodeViewHolder<InventoryViewHolder.InventoryRow> {
 
     private Context context;
+    private ImageView ivArrow;
 
     @Inject
     public InventoryViewHolder(Context context) {
@@ -38,9 +40,19 @@ public class InventoryViewHolder extends TreeNode.BaseNodeViewHolder<InventoryVi
         return view;
     }
 
+    @Override
+    public void toggle(boolean active) {
+        super.toggle(active);
+        if (active) {
+            ivArrow.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_chevron_down_grey600_36dp, null));
+        } else {
+            ivArrow.setImageDrawable(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_chevron_right_grey600_36dp, null));
+        }
+    }
+
     private void setupViews(InventoryRow inventoryRow, View view) {
 
-        final ImageView ivArrow = (ImageView) view.findViewById(R.id.items_row_arrow);
+        ivArrow = (ImageView) view.findViewById(R.id.items_row_arrow);
         ivArrow.setVisibility(inventoryRow.hasChildren ? View.VISIBLE : View.INVISIBLE);
         initIndentation(inventoryRow, ivArrow);
 

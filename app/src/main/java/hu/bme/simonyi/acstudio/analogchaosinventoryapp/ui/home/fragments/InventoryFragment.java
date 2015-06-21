@@ -111,6 +111,7 @@ public class InventoryFragment extends RoboFragment {
             savedTreeViewState = treeView.getSaveState();
         }
         treeView = new AndroidTreeView(getActivity(), treeCreator.createTree(getItemsFromDatabase()));
+        treeView.setDefaultAnimation(true);
         if (savedTreeViewState != null) {
             treeView.restoreState(savedTreeViewState);
         }

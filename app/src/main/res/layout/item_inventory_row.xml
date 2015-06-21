@@ -19,7 +19,7 @@
             android:id="@+id/items_row_arrow"
             android:layout_width="@dimen/touchable_item_size_small"
             android:layout_height="@dimen/touchable_item_size_small"
-            android:src="@drawable/ic_chevron_down_grey600_36dp" />
+            android:src="@drawable/ic_chevron_right_grey600_36dp" />
 
         <TextView
             android:id="@+id/items_row_id"
