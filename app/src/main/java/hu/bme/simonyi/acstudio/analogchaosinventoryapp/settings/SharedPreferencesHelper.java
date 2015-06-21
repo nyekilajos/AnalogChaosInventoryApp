@@ -69,7 +69,7 @@ public class SharedPreferencesHelper implements LocalSettingsService {
 
     @Override
     public void setSessionCode(String sessionCode) {
-        userDataSettings.edit().putString(USER_SESSION_CODE, sessionCode).apply();
+        userDataSettings.edit().putString(USER_SESSION_CODE, sessionCode).commit();
     }
 
     @Override

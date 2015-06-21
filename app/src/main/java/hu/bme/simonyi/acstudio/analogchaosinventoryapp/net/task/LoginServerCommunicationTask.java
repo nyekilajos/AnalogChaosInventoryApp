@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
@@ -46,9 +44,19 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
         execute();
     }
 
+    /**
+     * Refreshes the session code with the user data stored in the local settings without creating a new thread.
+     */
+    public void refreshSessionSynchronous() throws Exception {
+        LoginRequest loginRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(), REMEMBERME);
+        setRequestEntity(new HttpEntity<>(loginRequest, getJsonHttpHeaders()));
+        call();
+    }
+
     @Override
-    protected void onSuccess(LoginResponse t) throws Exception {
-        localSettingsService.setSessionCode(t.getResult());
-        super.onSuccess(t);
+    public LoginResponse call() throws Exception {
+        LoginResponse loginResponse = super.call();
+        localSettingsService.setSessionCode(loginResponse.getResult());
+        return loginResponse;
     }
 }

@@ -6,10 +6,13 @@ import com.google.inject.Inject;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.client.HttpStatusCodeException;
 
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.CommunicationTaskUtils;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutResponse;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
+import roboguice.inject.ContextScopedProvider;
 
 /**
  * Async task for logout.
@@ -22,6 +25,8 @@ public class LogoutServerCommunicationTask extends GenericServerCommunicationTas
 
     @Inject
     private LocalSettingsService localSettingsService;
+    @Inject
+    private ContextScopedProvider<LoginServerCommunicationTask> loginServerCommunicationTaskProvider;
 
     @Inject
     protected LogoutServerCommunicationTask(Context context) {
@@ -46,5 +51,19 @@ public class LogoutServerCommunicationTask extends GenericServerCommunicationTas
             localSettingsService.reset();
         }
         super.onSuccess(t);
+    }
+
+    @Override
+    public LogoutResponse call() throws Exception {
+        LogoutResponse logoutResponse = null;
+        try {
+            logoutResponse = super.call();
+        } catch (HttpStatusCodeException e) {
+            if (CommunicationTaskUtils.isAuthenticationFailed(e)) {
+                loginServerCommunicationTaskProvider.get(context).refreshSessionSynchronous();
+                logoutResponse = super.call();
+            }
+        }
+        return logoutResponse;
     }
 }

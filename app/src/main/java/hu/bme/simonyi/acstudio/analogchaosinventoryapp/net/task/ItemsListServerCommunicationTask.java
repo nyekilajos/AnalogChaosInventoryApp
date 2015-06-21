@@ -6,11 +6,14 @@ import com.google.inject.Inject;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.CouchbaseLiteHelper;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.CommunicationTaskUtils;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.ItemsListRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.ItemsListResponse;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
+import roboguice.inject.ContextScopedProvider;
 
 /**
  * Async task for getting the list o the available items in the inventory.
@@ -21,14 +24,16 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
 
     private static final String AC_API_LIST_METHOD = "/list";
 
+    @Inject
     private CouchbaseLiteHelper couchbaseLiteHelper;
+    @Inject
     private LocalSettingsService localSettingsService;
+    @Inject
+    private ContextScopedProvider<LoginServerCommunicationTask> loginServerCommunicationTaskProvider;
 
     @Inject
-    protected ItemsListServerCommunicationTask(Context context, LocalSettingsService localSettingsService, CouchbaseLiteHelper couchbaseLiteHelper) {
+    protected ItemsListServerCommunicationTask(Context context) {
         super(context);
-        this.localSettingsService = localSettingsService;
-        this.couchbaseLiteHelper = couchbaseLiteHelper;
         setHttpMethod(HttpMethod.POST);
         setResponseType(ItemsListResponse.class);
         setServerUrl(AC_API_ENDPONT + AC_API_VERSION + AC_API_ITEMS_MODULE + AC_API_LIST_METHOD);
@@ -38,14 +43,27 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
      * Updates the local inventory database from web.
      */
     public void updateItems() {
+        setupRequest();
+        execute();
+    }
+
+    private void setupRequest() {
         ItemsListRequest itemsListRequest = new ItemsListRequest(localSettingsService.getSessionCode());
         setRequestEntity(new HttpEntity<>(itemsListRequest, getJsonHttpHeaders()));
-        execute();
     }
 
     @Override
     public ItemsListResponse call() throws Exception {
-        ItemsListResponse itemsListResponse = super.call();
+        ItemsListResponse itemsListResponse = null;
+        try {
+            itemsListResponse = super.call();
+        } catch (HttpStatusCodeException e) {
+            if (CommunicationTaskUtils.isAuthenticationFailed(e)) {
+                loginServerCommunicationTaskProvider.get(context).refreshSessionSynchronous();
+                setupRequest();
+                itemsListResponse = super.call();
+            }
+        }
         couchbaseLiteHelper.writeItemsToDb(itemsListResponse.getResult());
         return itemsListResponse;
     }
