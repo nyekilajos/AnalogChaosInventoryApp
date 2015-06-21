@@ -1,5 +1,7 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings;
 
+import java.util.Set;
+
 /**
  * Service to save and load local settings for the app
  *
@@ -21,4 +23,7 @@ public interface LocalSettingsService {
 
     void setSessionCode(String sessionCode);
 
+    Set<String> getItemsCouchbaseLiteDocumentIds();
+
+    void setItemsCouchbaseLiteDocumentIds(Set<String> documentIds);
 }

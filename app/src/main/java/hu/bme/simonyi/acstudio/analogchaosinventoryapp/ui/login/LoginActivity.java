@@ -1,6 +1,5 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login;
 
-import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -76,7 +75,6 @@ public class LoginActivity extends RoboActivity {
 
         @Override
         public void onClick(View v) {
-            localSettingsService.setEmailAddress(emailEditText.getText().toString());
 
             emailEditText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -125,6 +123,8 @@ public class LoginActivity extends RoboActivity {
                 if (getCurrentFocus() != null) {
                     inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
+                localSettingsService.setEmailAddress(emailEditText.getText().toString());
+                localSettingsService.setPassword(passwordEdittext.getText().toString());
                 startLoginCommunication();
             }
         }

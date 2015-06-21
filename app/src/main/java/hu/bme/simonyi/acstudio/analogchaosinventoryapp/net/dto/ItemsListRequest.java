@@ -6,24 +6,24 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 
 /**
- * Request class fro logout
+ * Request class for getting the inventory items list from the server.
  *
  * @author Lajos Nyeki
  */
-public class LogoutRequest implements Parcelable {
+public class ItemsListRequest implements Parcelable {
 
     @Expose
     private String session;
 
-    public static final Creator<LogoutRequest> CREATOR = new Creator<LogoutRequest>() {
+    public static final Creator<ItemsListRequest> CREATOR = new Creator<ItemsListRequest>() {
         @Override
-        public LogoutRequest createFromParcel(Parcel source) {
-            return new LogoutRequest(source);
+        public ItemsListRequest createFromParcel(Parcel source) {
+            return new ItemsListRequest(source);
         }
 
         @Override
-        public LogoutRequest[] newArray(int size) {
-            return new LogoutRequest[size];
+        public ItemsListRequest[] newArray(int size) {
+            return new ItemsListRequest[size];
         }
     };
 
@@ -35,11 +35,11 @@ public class LogoutRequest implements Parcelable {
         this.session = session;
     }
 
-    public LogoutRequest(String session) {
+    public ItemsListRequest(String session) {
         this.session = session;
     }
 
-    public LogoutRequest(Parcel in) {
+    public ItemsListRequest(Parcel in) {
         session = in.readString();
     }
 
