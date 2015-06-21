@@ -36,6 +36,8 @@ public class InventoryFragment extends RoboFragment {
     public static final int TITLE_ID = R.string.navigation_inventory;
     public static final String TAG = InventoryFragment.class.getSimpleName();
 
+    private static final String SAVE_STATE_TREE_VIEW = "saveStateTreeView";
+
     @Inject
     private DialogFactory dialogFactory;
     @Inject
@@ -44,6 +46,7 @@ public class InventoryFragment extends RoboFragment {
     private CouchbaseLiteHelper couchbaseLiteHelper;
 
     private LinearLayout contentRootLayout;
+    private AndroidTreeView treeView;
 
     @Inject
     private ContextScopedProvider<ItemsListServerCommunicationTask> itemsListServerCommunicationTaskProvider;
@@ -56,14 +59,16 @@ public class InventoryFragment extends RoboFragment {
 
         @Override
         public void onSuccess(ItemsListResponse itemsListResponse) throws Exception {
-            refreshTreeView();
-
+            if (isVisible()) {
+                refreshTreeView();
+            }
         }
 
         @Override
         public void onThrowable(Throwable t) throws RuntimeException {
-            Toast.makeText(getActivity(), getString(R.string.error_items_list), Toast.LENGTH_LONG).show();
-
+            if (isVisible()) {
+                Toast.makeText(getActivity(), getString(R.string.error_items_list), Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
@@ -78,11 +83,19 @@ public class InventoryFragment extends RoboFragment {
         View view = inflater.inflate(R.layout.fragment_inventory, container, false);
         contentRootLayout = (LinearLayout) view.findViewById(R.id.inventory_fragment_content);
         refreshTreeView();
+        restoreTreeViewState(savedInstanceState);
+        updateLocalDatabase();
         return view;
     }
 
+    private void restoreTreeViewState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            treeView.restoreState(savedInstanceState.getString(SAVE_STATE_TREE_VIEW));
+        }
+    }
+
     private List<Item> getItemsFromDatabase() {
-        List<Item> items = null;
+        List<Item> items;
         try {
             items = couchbaseLiteHelper.getItemsList();
         } catch (CouchbaseLiteException e) {
@@ -93,16 +106,27 @@ public class InventoryFragment extends RoboFragment {
     }
 
     private void refreshTreeView() {
-        AndroidTreeView treeView = new AndroidTreeView(getActivity(), treeCreator.createTree(getItemsFromDatabase()));
+        String savedTreeViewState = null;
+        if (treeView != null) {
+            savedTreeViewState = treeView.getSaveState();
+        }
+        treeView = new AndroidTreeView(getActivity(), treeCreator.createTree(getItemsFromDatabase()));
+        if (savedTreeViewState != null) {
+            treeView.restoreState(savedTreeViewState);
+        }
         contentRootLayout.removeAllViews();
         contentRootLayout.addView(treeView.getView());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ItemsListServerCommunicationTask itemsListServerCommunicationTask = itemsListServerCommunicationTaskProvider.get(getActivity());
+    private void updateLocalDatabase() {
+        ItemsListServerCommunicationTask itemsListServerCommunicationTask = itemsListServerCommunicationTaskProvider.get(getActivity().getApplicationContext());
         itemsListServerCommunicationTask.setStatusHandler(itemsListStatusHandler);
         itemsListServerCommunicationTask.updateItems();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVE_STATE_TREE_VIEW, treeView.getSaveState());
     }
 }
