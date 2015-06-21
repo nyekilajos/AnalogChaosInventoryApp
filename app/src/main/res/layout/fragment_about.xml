@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/layout_margin_small"
+        android:layout_marginBottom="@dimen/layout_margin_small"/>
+
+    <ImageView
+        android:layout_width="@dimen/default_image_size"
+        android:layout_height="@dimen/default_image_size"
+        android:src="@drawable/aclogo_feher_zold_dark_medium"
+        android:layout_marginTop="@dimen/layout_margin_small"
+        android:layout_marginBottom="@dimen/layout_margin_small"/>
+
+    <TextView
+        android:id="@+id/about_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_small"
+        android:padding="@dimen/ui_padding_small"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/copyright"
+        android:textSize="@dimen/text_size_small"
+        android:padding="@dimen/ui_padding_small"/>
+
+</LinearLayout>
