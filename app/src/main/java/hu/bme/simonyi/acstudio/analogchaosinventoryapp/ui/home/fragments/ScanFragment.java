@@ -48,16 +48,24 @@ public class ScanFragment extends RoboFragment {
                 if (barcodeScanHelper.isZxingInstalled()) {
                     startActivityForResult(barcodeScanHelper.getBarcodeScanIntent(), REQUEST_BARCODE_SCAN);
                 } else {
-                    barcodeScanHelper.showPlaystore();
+                    startIntegratedBarcodeScanner();
                 }
             }
         });
     }
 
+    /**
+     * Starts the built-in ZXing barcode scanner activity.
+     */
+    private void startIntegratedBarcodeScanner()
+    {
+        IntentIntegrator.forSupportFragment(this).initiateScan();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_BARCODE_SCAN) {
+        if (requestCode == REQUEST_BARCODE_SCAN || requestCode == IntentIntegrator.REQUEST_CODE) {
             barcodeScanHelper.processBarcodeScanResult(resultCode, data);
         }
     }
