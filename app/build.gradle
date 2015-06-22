@@ -14,7 +14,7 @@ android {
         targetSdkVersion 22
         versionCode versionCodeTimeStamp
         versionName "${acAppVersion}.${versionNameForBuild}"
-        applicationId = "hu.bme.simonyi.acstudio.analogchaosinventoryapp"
+        resValue("string", "appversion", "${acAppVersion}.${versionNameForBuild}")
     }
     signingConfigs {
         release {
@@ -32,14 +32,12 @@ android {
             zipAlignEnabled true
             signingConfig signingConfigs.release
             debuggable false
-            resValue("string", "appversion", "${acAppVersion}.${versionNameForBuild}")
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled false
             debuggable true
-            resValue("string", "appversion", "${acAppVersion}.${versionNameForBuild}")
         }
     }
     lintOptions {
@@ -64,7 +62,12 @@ android.applicationVariants.all { variant ->
         if (variant.baseName.contains("debug")) {
             additionalTags += '-debug'
         }
-        name = "ac-app${additionalTags}-${acAppVersion}.apk"
+        if (output.zipAlign) {
+            def signAlignInfo = variant.buildType.name == "release" ? "-signed-aligned" : "-UNALIGNED"
+            name = "ac-app${additionalTags}-${acAppVersion}${signAlignInfo}.apk"
+            output.outputFile = new File(apkDirectory, name);
+        }
+        name = "ac-app${additionalTags}-${acAppVersion}-UNALIGNED.apk"
         output.packageApplication.outputFile = new File(apkDirectory, name);
     }
 }
