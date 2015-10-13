@@ -23,6 +23,12 @@ android {
             keyAlias AC_KEY_ALIAS
             keyPassword AC_KEY_PASSWORD
         }
+        debug {
+            storeFile file('../ac-debug.jks')
+            storePassword 'nemkellsornyito'
+            keyAlias 'AcAppDebugKey'
+            keyPassword 'nemkellsornyito'
+        }
     }
 
     buildTypes {
@@ -37,6 +43,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled false
+            signingConfig signingConfigs.debug
             debuggable true
         }
     }
