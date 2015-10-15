@@ -43,7 +43,7 @@ public class ACOrmLiteSqliteOpenHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
-
+        //There was no release yet, only one schema exists for the database
     }
 
     /**

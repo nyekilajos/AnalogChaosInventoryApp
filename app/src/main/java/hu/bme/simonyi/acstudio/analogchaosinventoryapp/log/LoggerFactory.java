@@ -7,6 +7,10 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.log;
  */
 public class LoggerFactory {
 
+    private LoggerFactory() {
+
+    }
+
     /**
      * Returns a Logger instance according to the actual build configuration.
      *

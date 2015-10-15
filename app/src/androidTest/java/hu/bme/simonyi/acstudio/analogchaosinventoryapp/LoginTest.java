@@ -50,7 +50,7 @@ public class LoginTest extends InstrumentationTestCase {
         uiDevice.findObject(new UiSelector().resourceId("hu.bme.simonyi.acstudio.analogchaosinventoryapp:id/edit_email_login"))
                 .setText("nyekilajos@gmail.com");
         uiDevice.findObject(new UiSelector().resourceId("hu.bme.simonyi.acstudio.analogchaosinventoryapp:id/edit_password_login"))
-                .setText("NyL900211");
+                .setText("...");
         uiDevice.findObject(new UiSelector().resourceId("hu.bme.simonyi.acstudio.analogchaosinventoryapp:id/btn_login")).click();
 
         uiDevice.wait(Until.hasObject(By.clazz(HomeActivity.class)), 10000);

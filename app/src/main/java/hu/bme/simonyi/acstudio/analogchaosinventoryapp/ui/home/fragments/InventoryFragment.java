@@ -1,5 +1,11 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import roboguice.fragment.RoboFragment;
+import roboguice.inject.ContextScopedProvider;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,19 +18,16 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.google.inject.Inject;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.CouchbaseLiteHelper;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.Item;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.inventory.TreeCreator;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.Logger;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.LoggerFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.ItemsListResponse;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.ItemsListServerCommunicationTask;
-import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
-import roboguice.fragment.RoboFragment;
-import roboguice.inject.ContextScopedProvider;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.SimpleStatusHandler;
 
 /**
  * Fragment for displaying the inventory list of the AC Studio & Live
@@ -36,10 +39,9 @@ public class InventoryFragment extends RoboFragment {
     public static final int TITLE_ID = R.string.navigation_inventory;
     public static final String TAG = InventoryFragment.class.getSimpleName();
 
+    private static final Logger LOGGER = LoggerFactory.createLogger(InventoryFragment.class);
     private static final String SAVE_STATE_TREE_VIEW = "saveStateTreeView";
 
-    @Inject
-    private DialogFactory dialogFactory;
     @Inject
     private TreeCreator treeCreator;
     @Inject
@@ -51,11 +53,7 @@ public class InventoryFragment extends RoboFragment {
     @Inject
     private ContextScopedProvider<ItemsListServerCommunicationTask> itemsListServerCommunicationTaskProvider;
 
-    private GenericServerCommunicationTask.CommunicationStatusHandler<ItemsListResponse> itemsListStatusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<ItemsListResponse>() {
-        @Override
-        public void onPreExecute() throws Exception {
-
-        }
+    private GenericServerCommunicationTask.CommunicationStatusHandler<ItemsListResponse> itemsListStatusHandler = new SimpleStatusHandler<ItemsListResponse>() {
 
         @Override
         public void onSuccess(ItemsListResponse itemsListResponse) throws Exception {
@@ -71,10 +69,6 @@ public class InventoryFragment extends RoboFragment {
             }
         }
 
-        @Override
-        public void onFinally() throws RuntimeException {
-
-        }
     };
 
     @Nullable
@@ -99,7 +93,7 @@ public class InventoryFragment extends RoboFragment {
         try {
             items = couchbaseLiteHelper.getItemsList();
         } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             items = new ArrayList<>();
         }
         return items;
@@ -120,7 +114,8 @@ public class InventoryFragment extends RoboFragment {
     }
 
     private void updateLocalDatabase() {
-        ItemsListServerCommunicationTask itemsListServerCommunicationTask = itemsListServerCommunicationTaskProvider.get(getActivity().getApplicationContext());
+        ItemsListServerCommunicationTask itemsListServerCommunicationTask = itemsListServerCommunicationTaskProvider
+                .get(getActivity().getApplicationContext());
         itemsListServerCommunicationTask.setStatusHandler(itemsListStatusHandler);
         itemsListServerCommunicationTask.updateItems();
     }

@@ -27,20 +27,20 @@ public class LogoutRequest implements Parcelable {
         }
     };
 
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
     public LogoutRequest(String session) {
         this.session = session;
     }
 
     public LogoutRequest(Parcel in) {
         session = in.readString();
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 
     @Override

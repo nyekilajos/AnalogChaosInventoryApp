@@ -1,12 +1,12 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home;
 
+import roboguice.fragment.RoboFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.AboutFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.HelpAndTipsFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.InventoryFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.RentalHistoryFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.ScanFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.SettingsFragment;
-import roboguice.fragment.RoboFragment;
 
 /**
  * Factory for the home screen fragments
@@ -14,6 +14,10 @@ import roboguice.fragment.RoboFragment;
  * @author Lajos Nyeki
  */
 public class HomeScreenFragmentFactory {
+
+    private HomeScreenFragmentFactory() {
+
+    }
 
     /**
      * Method to create a fragment by its tag.

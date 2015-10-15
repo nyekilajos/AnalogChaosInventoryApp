@@ -27,20 +27,20 @@ public class ItemsListRequest implements Parcelable {
         }
     };
 
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
     public ItemsListRequest(String session) {
         this.session = session;
     }
 
     public ItemsListRequest(Parcel in) {
         session = in.readString();
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 
     @Override

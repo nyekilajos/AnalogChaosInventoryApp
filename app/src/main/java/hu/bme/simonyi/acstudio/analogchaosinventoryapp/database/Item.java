@@ -104,7 +104,7 @@ public class Item implements Parcelable {
 
     private void writeChildrenToParcel(Parcel dest, int flags) {
         dest.writeInt(children.size());
-        for (Item itemDto : children) {
+        for (Item ignored : children) {
             writeToParcel(dest, flags);
         }
     }

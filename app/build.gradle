@@ -65,6 +65,17 @@ android {
 
 apply from: "../jacoco-support.gradle"
 
+apply plugin: "sonar-runner"
+
+sonarRunner {
+    sonarProperties  {
+        toolVersion = '2.4' // default
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.surefire.reportsPath", "build/reports/tests"
+        property "sonar.scm.provider", "git"
+    }
+}
 
 android.applicationVariants.all { variant ->
     def name

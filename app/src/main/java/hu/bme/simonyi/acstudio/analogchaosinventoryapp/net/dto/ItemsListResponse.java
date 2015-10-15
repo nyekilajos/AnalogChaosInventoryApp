@@ -13,10 +13,6 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.Item;
  * @author Lajos Nyeki
  */
 public class ItemsListResponse extends GenericServerResponse<List<Item>> {
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     public ItemsListResponse(Parcel in) {
         readCommonDataFromParcel(in);
@@ -30,6 +26,11 @@ public class ItemsListResponse extends GenericServerResponse<List<Item>> {
             items.add(new Item(in));
         }
         setResult(items);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
