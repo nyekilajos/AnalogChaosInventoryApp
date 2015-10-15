@@ -87,15 +87,15 @@ public class InventoryViewHolder extends TreeNode.BaseNodeViewHolder<InventoryVi
     /**
      * POJO class for holding data for the rows of the TreeView on the inventory fragment.
      */
-    public static class InventoryRow {
-        public String id;
-        public String name;
-        public String categoryText;
-        public String quantity;
-        public String barcode;
-        public String comment;
-        public boolean hasChildren;
-        public int level;
+    static final class InventoryRow {
+        String id;
+        String name;
+        String categoryText;
+        String quantity;
+        String barcode;
+        String comment;
+        boolean hasChildren;
+        int level;
 
     }
 }

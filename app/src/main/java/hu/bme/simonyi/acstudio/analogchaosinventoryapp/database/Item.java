@@ -1,11 +1,12 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
-
-import java.util.ArrayList;
 
 /**
  * Class for storing inventory item objects.
@@ -54,7 +55,7 @@ public class Item implements Parcelable {
     private int broken;
 
     @Expose
-    private ArrayList<Item> children;
+    private List<Item> children;
 
     public Item() {
 
@@ -181,11 +182,11 @@ public class Item implements Parcelable {
         this.broken = broken;
     }
 
-    public ArrayList<Item> getChildren() {
+    public List<Item> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<Item> children) {
+    public void setChildren(List<Item> children) {
         this.children = children;
     }
 }
