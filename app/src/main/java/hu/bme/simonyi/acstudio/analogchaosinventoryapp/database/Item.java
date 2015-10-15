@@ -68,7 +68,6 @@ public class Item implements Parcelable {
         category_text = in.readString();
         quantity = in.readInt();
         parent = in.readInt();
-        //parentItem = new Item();
         barcode = in.readString();
         comment = in.readString();
         broken = in.readInt();
