@@ -71,9 +71,12 @@ sonarRunner {
     sonarProperties  {
         toolVersion = '2.4' // default
         property "sonar.sources", "src/main/java"
+        property "sonar.java.binaries", ["build/intermediates"]
         property "sonar.tests", "src/test/java"
-        property "sonar.surefire.reportsPath", "build/reports/tests"
+        property "sonar.java.test.binaries", "build/intermediates/classes/test/debug"
+        property "sonar.surefire.reportsPath", "build/test-results/debug"
         property "sonar.scm.provider", "git"
+        property "sonar.jacoco.reportPath", "build/jacoco/testDebugUnitTest.exec"
     }
 }
 
