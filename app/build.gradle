@@ -64,9 +64,8 @@ android {
 }
 
 apply from: "../jacoco-support.gradle"
-
 apply from: "../checkstyle-support.gradle"
-
+apply from: "../pmd-support.gradle"
 apply plugin: "sonar-runner"
 
 sonarRunner {

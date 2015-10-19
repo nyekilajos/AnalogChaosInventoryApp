@@ -1,7 +1,7 @@
 apply plugin: "checkstyle"
 
 task checkstyle(type: Checkstyle) {
-    configFile file("${project.rootDir}/checkstyle/checkstyle_rules.xml")
+    configFile file("${project.rootDir}/quality/checkstyle/checkstyle_rules.xml")
     configProperties = [samedir: "${project.rootDir}/checkstyle/"]
     source 'src'
     include '**/*.java'
