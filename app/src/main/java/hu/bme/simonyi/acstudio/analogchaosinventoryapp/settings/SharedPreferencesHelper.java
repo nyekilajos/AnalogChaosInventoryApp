@@ -1,5 +1,6 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -68,6 +69,7 @@ public class SharedPreferencesHelper implements LocalSettingsService {
     }
 
     @Override
+    @SuppressLint("CommitPrefEdits")
     public void setSessionCode(String sessionCode) {
         userDataSettings.edit().putString(USER_SESSION_CODE, sessionCode).commit();
     }

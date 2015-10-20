@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -35,7 +36,7 @@ public class DialogFactory {
     public AlertDialog createAlertDialog(String errorText) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = layoutInflater.inflate(R.layout.dialog_alert, null);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_alert, new LinearLayout(context), false);
         ImageView icon = (ImageView) dialogView.findViewById(R.id.icon_dialog);
         icon.setImageResource(R.drawable.ic_alert_circle_grey600_48dp);
         TextView tv = (TextView) dialogView.findViewById(R.id.tv_dialog_alert);

@@ -25,3 +25,5 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
         }
     }
 }
+
+tasks.check.dependsOn(project.tasks.getByName("jacocoTestReport"))

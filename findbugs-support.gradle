@@ -23,3 +23,5 @@ task findbugs(type: FindBugs, dependsOn: assembleDebug) {
 
     classpath = files("$project.buildDir") + project.configurations.compile.asFileTree
 }
+
+tasks.check.dependsOn(project.tasks.getByName("findbugs"))

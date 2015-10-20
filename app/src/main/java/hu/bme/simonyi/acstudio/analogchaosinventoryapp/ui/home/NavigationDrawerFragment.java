@@ -88,13 +88,18 @@ public class NavigationDrawerFragment extends RoboFragment {
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && listener != null && gestureDetector.onTouchEvent(e)) {
-                listener.onDrawerItemSelected(child, recyclerView.getChildPosition(child));
+                listener.onDrawerItemSelected(child, recyclerView.getChildAdapterPosition(child));
             }
             return false;
         }
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+            //Do nothing
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
             //Do nothing
         }
     }

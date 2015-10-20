@@ -1,6 +1,6 @@
 apply plugin: 'pmd'
 
-task pmd(type: Pmd) {
+task pmd(type: Pmd, dependsOn: assembleDebug) {
     ruleSetFiles = files("${project.rootDir}/quality/pmd/pmd_rules.xml")
     ignoreFailures = true
 
@@ -13,3 +13,5 @@ task pmd(type: Pmd) {
         html.enabled = false
     }
 }
+
+tasks.check.dependsOn(project.tasks.getByName("pmd"))
