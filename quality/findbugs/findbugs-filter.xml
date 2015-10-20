@@ -1,18 +1,9 @@
 <FindBugsFilter>
-     <!-- All bugs in test classes, except for JUnit-specific bugs -->
      <Match>
-      <Class name="~.*\.*Test" />
-      <Not>
-          <Bug code="IJU" />
-      </Not>
-     </Match>
-
-	 <!-- All android classes -->
-	 <Match>
-      <Package name="~.*\.android.*" />
-      <Not>
-          <Bug code="IJU" />
-      </Not>
-     </Match>
+        <Class name="~.*R\$.*"/>
+    </Match>
+    <Match>
+        <Class name="~.*Manifest\$.*"/>
+    </Match>
 	 
 </FindBugsFilter>

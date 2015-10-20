@@ -1,13 +1,16 @@
 apply plugin: "findbugs"
 
-task findbugs(type: FindBugs) {
+task findbugs(type: FindBugs, dependsOn: assembleDebug) {
+
+    description 'Run findbugs'
+    group 'verification'
+
     ignoreFailures = true
     effort = "max"
-    reportLevel = "high"
     excludeFilter = new File("${project.rootDir}/quality/findbugs/findbugs-filter.xml")
-    classes = files("$project.buildDir/intermediates/classes/")
+    classes = files("$project.buildDir/intermediates/classes/debug/")
 
-    source 'src'
+    source 'src/main/java'
     include '**/*.java'
     exclude '**/gen/**'
 
@@ -18,5 +21,5 @@ task findbugs(type: FindBugs) {
         }
     }
 
-    classpath = files()
+    classpath = files("$project.buildDir") + project.configurations.compile.asFileTree
 }

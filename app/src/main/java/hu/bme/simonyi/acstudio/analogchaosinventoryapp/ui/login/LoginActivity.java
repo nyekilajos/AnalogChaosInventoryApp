@@ -243,7 +243,7 @@ public class LoginActivity extends RoboActivity {
 
         @Override
         public void run() {
-            acLogoImage.setX(initX + deltaX * interpolator.getInterpolation(frameCount / STEPS));
+            acLogoImage.setX(initX + deltaX * interpolator.getInterpolation(((float) frameCount) / STEPS));
             acLogoImage.invalidate();
             if (frameCount < STEPS) {
                 frameCount++;
