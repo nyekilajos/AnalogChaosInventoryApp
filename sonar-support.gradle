@@ -1,0 +1,15 @@
+apply plugin: "org.sonarqube"
+
+sonarqube {
+    properties {
+        property "sonar.sources", "src/main/java"
+        property "sonar.tests", "src/test/java"
+        property "sonar.java.binaries", "build/intermediates/classes/debug"
+        property "sonar.java.libraries", files("$project.buildDir") + project.configurations.compile.asFileTree
+        property "sonar.java.test.binaries", "build/intermediates/classes/test/debug"
+        property "sonar.java.test.libraries", project.configurations.testCompile.asFileTree
+        property "sonar.junit.reportsPath", "build/test-results/debug"
+        property "sonar.jacoco.reportPath", "build/jacoco/testDebugUnitTest.exec"
+
+    }
+}
