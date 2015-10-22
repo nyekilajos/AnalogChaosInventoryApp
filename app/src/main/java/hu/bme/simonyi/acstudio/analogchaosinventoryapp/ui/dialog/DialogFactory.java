@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,9 +36,8 @@ public class DialogFactory {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View dialogView = layoutInflater.inflate(R.layout.dialog_alert, new LinearLayout(context), false);
-        ImageView icon = (ImageView) dialogView.findViewById(R.id.icon_dialog);
-        icon.setImageResource(R.drawable.ic_alert_circle_grey600_48dp);
         TextView tv = (TextView) dialogView.findViewById(R.id.tv_dialog_alert);
+        tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alert_circle_grey600_48dp, 0, 0, 0);
         tv.setText(errorText);
         builder.setView(dialogView);
         builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {

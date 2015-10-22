@@ -5,16 +5,11 @@
     android:orientation="horizontal"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/icon_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/ui_padding_large"/>
-
     <TextView
         android:id="@+id/tv_dialog_alert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/ui_padding_large"
         android:layout_gravity="center"
         android:padding="@dimen/ui_padding_large"
         android:textColor="@color/primary_text"

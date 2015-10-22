@@ -9,6 +9,7 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 import android.test.InstrumentationTestCase;
+import android.widget.ImageView;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivity;
 
@@ -57,10 +58,10 @@ public class LoginTest extends InstrumentationTestCase {
     }
 
     private void logout() throws UiObjectNotFoundException {
-        uiDevice.findObject(new UiSelector().descriptionContains("More options")).click();
-        uiDevice.wait(Until.hasObject(By.text("Logout")), 2000);
+        uiDevice.findObject(new UiSelector().className(ImageView.class).index(0)).click();
+        uiDevice.wait(Until.hasObject(By.res("hu.bme.simonyi.acstudio.analogchaosinventoryapp:id/title")), 2000);
 
-        uiDevice.findObject(new UiSelector().text("Logout")).click();
+        uiDevice.findObject(new UiSelector().resourceId("hu.bme.simonyi.acstudio.analogchaosinventoryapp:id/title")).click();
         uiDevice.wait(Until.hasObject(By.text("Login")), 5000);
     }
 

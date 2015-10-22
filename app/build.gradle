@@ -51,7 +51,7 @@ android {
     }
     lintOptions {
         abortOnError false
-        checkReleaseBuilds false
+        lintConfig file("${project.rootDir}/quality/lint/lint.xml")
     }
 
     packagingOptions {
