@@ -34,11 +34,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), file('proguard-rules.pro')
             zipAlignEnabled true
             signingConfig signingConfigs.release
-            debuggable false
+            debuggable true
         }
         debug {
             minifyEnabled false
@@ -60,6 +60,7 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
+        exclude '.readme'
     }
 }
 
@@ -68,6 +69,16 @@ apply from: "../checkstyle-support.gradle"
 apply from: "../pmd-support.gradle"
 apply from: "../findbugs-support.gradle"
 apply from: "../sonar-support.gradle"
+
+apply plugin: 'com.getkeepsafe.dexcount'
+
+dexcount {
+    includeClasses = false
+    includeFieldCount = true
+    printAsTree = false
+    orderByMethodCount = false
+    verbose = false
+}
 
 android.applicationVariants.all { variant ->
     def name
