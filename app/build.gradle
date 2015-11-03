@@ -38,7 +38,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), file('proguard-rules.pro')
             zipAlignEnabled true
             signingConfig signingConfigs.release
-            debuggable true
+            debuggable false
         }
         debug {
             minifyEnabled false
@@ -116,13 +116,13 @@ dependencies {
     testCompile "junit:junit:4.12"
 
 
-    androidTestCompile (group: 'com.android.support.test', name: 'runner', version: '0.4.1') {
+    androidTestCompile(group: 'com.android.support.test', name: 'runner', version: '0.4.1') {
         exclude module: 'support-annotations'
     }
-    androidTestCompile (group: 'com.android.support.test', name: 'rules', version: '0.4.1') {
+    androidTestCompile(group: 'com.android.support.test', name: 'rules', version: '0.4.1') {
         exclude module: 'support-annotations'
     }
-    androidTestCompile (group: 'com.android.support.test.uiautomator', name: 'uiautomator-v18', version: '2.1.2') {
+    androidTestCompile(group: 'com.android.support.test.uiautomator', name: 'uiautomator-v18', version: '2.1.2') {
         exclude module: 'support-annotations'
     }
 }
