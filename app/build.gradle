@@ -1,38 +1,138 @@
+project.ext.acAppVersion = '0.1'
+def versionCodeTimeStamp = buildTime()
+def versionNameForBuild = createVersionName()
+
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "hu.bme.simonyi.acstudio.analogchaosinventoryapp"
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode versionCodeTimeStamp
+        versionName "${acAppVersion}.${versionNameForBuild}"
+        resValue("string", "appversion", "${acAppVersion}.${versionNameForBuild}")
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file(AC_STORE_FILE)
+            storePassword AC_STORE_PASSWORD
+            keyAlias AC_KEY_ALIAS
+            keyPassword AC_KEY_PASSWORD
+        }
+        debug {
+            storeFile file('../ac-debug.jks')
+            storePassword 'nemkellsornyito'
+            keyAlias 'AcAppDebugKey'
+            keyPassword 'nemkellsornyito'
+        }
+    }
+
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), file('proguard-rules.pro')
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
+            debuggable false
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled false
+            signingConfig signingConfigs.debug
+            debuggable true
+            testCoverageEnabled true
         }
     }
     lintOptions {
         abortOnError false
+        lintConfig file("${project.rootDir}/quality/lint/lint.xml")
     }
 
     packagingOptions {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/license.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude '.readme'
+    }
+}
+
+apply from: "../jacoco-support.gradle"
+apply from: "../checkstyle-support.gradle"
+apply from: "../pmd-support.gradle"
+apply from: "../findbugs-support.gradle"
+apply from: "../sonar-support.gradle"
+
+apply plugin: 'com.getkeepsafe.dexcount'
+
+dexcount {
+    includeClasses = false
+    includeFieldCount = true
+    printAsTree = false
+    orderByMethodCount = false
+    verbose = false
+}
+
+android.applicationVariants.all { variant ->
+    def name
+    variant.outputs.each { output ->
+        def apkDirectory = output.packageApplication.outputFile.parentFile
+        def additionalTags = ''
+        if (variant.baseName.contains("debug")) {
+            additionalTags += '-debug'
+        }
+        if (output.zipAlign) {
+            def signAlignInfo = variant.buildType.name == "release" ? "-signed-aligned" : "-UNALIGNED"
+            name = "ac-app${additionalTags}-${acAppVersion}${signAlignInfo}.apk"
+            output.outputFile = new File(apkDirectory, name);
+        }
+        name = "ac-app${additionalTags}-${acAppVersion}-UNALIGNED.apk"
+        output.packageApplication.outputFile = new File(apkDirectory, name);
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'org.roboguice:roboguice:3.0.1'
-    provided 'org.roboguice:roboblender:3.+'
+    provided 'org.roboguice:roboblender:3.0.1'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M1'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.github.bmelnychuk:atv:1.2.6'
+    compile 'com.couchbase.lite:couchbase-lite-android:1.0.4'
+    compile "com.fasterxml.jackson.core:jackson-core:2.5.4"
+    compile "com.fasterxml.jackson.core:jackson-databind:2.5.4"
+
+    testCompile "org.robolectric:robolectric:3.0"
+    testCompile "org.mockito:mockito-core:1.10.19"
+    testCompile "junit:junit:4.12"
+
+
+    androidTestCompile(group: 'com.android.support.test', name: 'runner', version: '0.4.1') {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(group: 'com.android.support.test', name: 'rules', version: '0.4.1') {
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile(group: 'com.android.support.test.uiautomator', name: 'uiautomator-v18', version: '2.1.2') {
+        exclude module: 'support-annotations'
+    }
+}
+
+def buildTime() {
+    def formattedDate = new Date().format('yyyMMdd')
+    return formattedDate as int
+}
+
+String createVersionName() {
+    def revisionCode = 'git rev-parse --short HEAD'.execute().text.trim()
+    return (revisionCode != null && !revisionCode.isEmpty() ? "${revisionCode}" : "${versionCodeTimeStamp}") as String
 }

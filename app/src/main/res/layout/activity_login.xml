@@ -11,8 +11,8 @@
 
         <ImageView
             android:id="@+id/ac_logo_login"
-            android:layout_width="168dp"
-            android:layout_height="168dp"
+            android:layout_width="@dimen/default_image_size"
+            android:layout_height="@dimen/default_image_size"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/layout_margin_large"
             android:layout_marginTop="@dimen/layout_margin_large"

@@ -1,5 +1,8 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home;
 
+import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,8 +21,6 @@ import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
-import roboguice.fragment.RoboFragment;
-import roboguice.inject.InjectView;
 
 /**
  * Fragment for the navigation drawer
@@ -27,8 +28,6 @@ import roboguice.inject.InjectView;
  * @author Lajos Nyeki
  */
 public class NavigationDrawerFragment extends RoboFragment {
-
-    private static final String TAG = NavigationDrawerFragment.class.getSimpleName();
 
     @InjectView(R.id.drawerList)
     private RecyclerView recyclerView;
@@ -89,20 +88,24 @@ public class NavigationDrawerFragment extends RoboFragment {
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && listener != null && gestureDetector.onTouchEvent(e)) {
-                listener.onDrawerItemSelected(child, recyclerView.getChildPosition(child));
+                listener.onDrawerItemSelected(child, recyclerView.getChildAdapterPosition(child));
             }
             return false;
         }
 
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+            //Do nothing
+        }
 
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            //Do nothing
         }
     }
 
     public interface DrawerItemSelectedListener {
         void onDrawerItemSelected(View view, int position);
     }
-
 
 }

@@ -3,6 +3,8 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Request class fro logout
  *
@@ -10,6 +12,7 @@ import android.os.Parcelable;
  */
 public class LogoutRequest implements Parcelable {
 
+    @Expose
     private String session;
 
     public static final Creator<LogoutRequest> CREATOR = new Creator<LogoutRequest>() {
@@ -24,20 +27,20 @@ public class LogoutRequest implements Parcelable {
         }
     };
 
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
     public LogoutRequest(String session) {
         this.session = session;
     }
 
     public LogoutRequest(Parcel in) {
         session = in.readString();
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 
     @Override

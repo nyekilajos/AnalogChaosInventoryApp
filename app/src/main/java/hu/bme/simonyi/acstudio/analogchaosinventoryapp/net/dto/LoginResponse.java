@@ -9,7 +9,7 @@ import android.os.Parcel;
  */
 public class LoginResponse extends GenericServerResponse<String> {
 
-    private static final Creator<LoginResponse> CREATOR = new Creator<LoginResponse>() {
+    public static final Creator<LoginResponse> CREATOR = new Creator<LoginResponse>() {
         @Override
         public LoginResponse createFromParcel(Parcel source) {
             return new LoginResponse(source);

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+
+    <!-- Turn off all checks for R.java generated files -->
+    <suppress checks="[a-zA-Z0-9]*" files="R\.java"/>
+
+    <!-- Turn off for subversion folders -->
+    <suppress checks="." files="\.svn[\\/].*" />
+    
+    <!-- Turn off for OS X specific system files -->
+    <suppress checks="." files="\.DS_Store" />
+    
+
+</suppressions>

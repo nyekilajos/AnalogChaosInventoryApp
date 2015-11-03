@@ -3,17 +3,22 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * DTO class for login request
  *
  * @author Lajos Nyeki
  */
 public class LoginRequest implements Parcelable {
+    @Expose
     private String email;
+    @Expose
     private String password;
+    @Expose
     private String rememberme;
 
-    private static final Creator<LoginRequest> CREATOR = new Creator<LoginRequest>() {
+    public static final Creator<LoginRequest> CREATOR = new Creator<LoginRequest>() {
         @Override
         public LoginRequest createFromParcel(Parcel source) {
             return new LoginRequest(source);

@@ -19,4 +19,5 @@
     <string name="unknown_communication_error">Ismeretlen hiba. Próbáld meg később!</string>
     <string name="wrong_email_or_pass">Hibás e-mail vagy jelszó.</string>
     <string name="wrong_credentials_alert">Hibás e-mail vagy jelszó. Próbáld meg újra.</string>
+    <string name="error_items_list">Leltár adatbázis frissítése nem sikerült. Valószínűleg problémák vannak az internet kapcsolatoddal, a szerverrel vagy pedig az adatbázis nem frissíthető a telefonodon. Próbáld meg később!</string>
 </resources>
