@@ -18,7 +18,7 @@ public class LoginRequest implements Parcelable {
     @Expose
     private String rememberme;
 
-    private static final Creator<LoginRequest> CREATOR = new Creator<LoginRequest>() {
+    public static final Creator<LoginRequest> CREATOR = new Creator<LoginRequest>() {
         @Override
         public LoginRequest createFromParcel(Parcel source) {
             return new LoginRequest(source);

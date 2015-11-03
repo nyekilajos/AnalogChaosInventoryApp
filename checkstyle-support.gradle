@@ -1,0 +1,13 @@
+apply plugin: "checkstyle"
+
+task checkstyle(type: Checkstyle, dependsOn: assembleDebug) {
+    configFile file("${project.rootDir}/quality/checkstyle/checkstyle_rules.xml")
+    configProperties = [samedir: "${project.rootDir}/quality/checkstyle/"]
+    source 'src/main/java'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = files()
+}
+
+tasks.check.dependsOn(project.tasks.getByName("checkstyle"))

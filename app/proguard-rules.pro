@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in C:\DevTools\android_sdk/tools/proguard/proguard-android.txt
+# in E:\Android\android-sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -19,34 +19,83 @@
 -dontobfuscate
 -dontoptimize
 -dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--dontpreverify
--verbose
--dump ../bin/class_files.txt
--printseeds ../bin/seeds.txt
--printusage ../bin/unused.txt
--printmapping ../bin/mapping.txt
+-dontskipnonpubliclibraryclasses 
+-dontpreverify 
+-verbose 
+#-dump ../bin/class_files.txt
+#-printseeds ../bin/seeds.txt
+#-printusage ../bin/unused.txt
+#-printmapping ../bin/mapping.txt 
 
-# The -optimizations option disables some arithmetic simplifications that Dalvik 1.0 and 1.5 can't handle.
--optimizations !code/simplification/arithmetic
+# The -optimizations option disables some arithmetic simplifications that Dalvik 1.0 and 1.5 can't handle. 
+-optimizations !code/simplification/arithmetic 
 
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.app.Activity 
+-keep public class * extends android.app.Application 
+-keep public class * extends android.app.Service 
+-keep public class * extends android.content.BroadcastReceiver 
 -keep public class * extends android.content.ContentProvider
 -keep class com.google.inject.Binder
 -keepclassmembers class * {
     @com.google.inject.Inject <init>(...);
 }
 # There's no way to keep all @Observes methods, so use the On*Event convention to identify event handlers
--keepclassmembers class * {
-    void *(**On*Event);
+-keepclassmembers class * { 
+    void *(**On*Event); 
 }
 -keep public class * extends android.view.View {
     public <init>(android.content.Context);
     public <init>(android.content.Context, android.util.AttributeSet);
     public <init>(android.content.Context, android.util.AttributeSet, int);
     public void set*(...);
-}
+} 
 -keep public class roboguice.**
+-keep class roboguice.** { *; }
+-keep class org.roboguice.** { *; }
+-keep public class javax.**
+-keep public class javax.annotation.**
+-keep public @interface javax.annotation.**
+-keep public interface javax.annotation.**
+-keep public class com.actionbarsherlock.**
+-keep public class com.actionbarsherlock.** { *; }
+-keep public class android.**
+-keep public class android.** { *; }
+-keep public class android.content.res.Resources.Theme
+-keep public class android.content.res.Resources.Theme { *; }
+-keep public class android.content.res.Resources
+-keep public class android.content.res.Resources { *; }
+-keep public class com.google.** { *; }
+-keep public class com.google.**
+-keep public class android.support.**
+-keep public interface android.support.**
+-keepattributes **
+
+-dontwarn roboguice.**
+-dontwarn com.actionbarsherlock.**
+-dontwarn com.google.android.maps.**
+-dontwarn javax.annotation.Nullable
+-dontwarn roboguice.activity.RoboMapActivity
+-dontwarn roboguice.activity.SherlockAccountAuthenticatorActivity
+-dontwarn javax.annotation.CheckReturnValue
+-dontwarn javax.annotation.concurrent.GuardedBy
+-dontwarn javax.annotation.ParametersAreNonnullByDefault
+-dontwarn sun.misc.Unsafe
+-dontwarn javax.annotation.CheckForNull
+-ignorewarnings
+
+-keep public class AnnotationDatabaseImpl
+-keep class hu.bme.simonyi.acstudio.analogchaosinventoryapp.inject.AnalogChaosModule
+
+-dontwarn org.springframework.http.converter.xml.**
+-dontwarn org.springframework.http.converter.feed.**
+
+-dontwarn org.springframework.http.client.**
+
+-keepnames class org.codehaus.jackson.** { *; }
+-dontwarn org.codehaus.jackson.map.ext.**
+-dontwarn com.fasterxml.jackson.**
+
+-keep class com.couchbase.touchdb.TDCollateJSON { *; }
+-keep class com.couchbase.lite.android.AndroidLogger { *; }
+-keep class com.couchbase.lite.android.AndroidSQLiteStorageEngine { *; }
+-dontwarn com.couchbase.**

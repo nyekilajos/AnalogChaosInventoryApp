@@ -21,6 +21,6 @@ public class CommunicationTaskUtils {
      * @return True if there was an authentication error.
      */
     public static boolean isAuthenticationFailed(Throwable t) {
-        return t != null && t instanceof HttpStatusCodeException && HttpStatus.UNAUTHORIZED.equals((((HttpStatusCodeException) t).getStatusCode()));
+        return t instanceof HttpStatusCodeException && HttpStatus.UNAUTHORIZED.equals(((HttpStatusCodeException) t).getStatusCode());
     }
 }

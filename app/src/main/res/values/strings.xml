@@ -26,5 +26,5 @@
     <string name="error_items_list">Inventory database update failed. Probably there are problems with your network connection, the database on your phone can not be read. Please try again later.</string>
     <string name="copyright" translatable="false">\u00A9 2015, AC Studio &amp; Live</string>
     <string name="about_version_text" translatable="false">Version</string>
-    <string name="hello_world">Hello AC World!</string>
+    <string name="hello_world" translatable="false">Hello AC World!</string>
 </resources>

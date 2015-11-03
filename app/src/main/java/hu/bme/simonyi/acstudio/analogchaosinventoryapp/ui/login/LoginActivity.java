@@ -1,5 +1,9 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login;
 
+import roboguice.activity.RoboActivity;
+import roboguice.inject.ContextScopedProvider;
+import roboguice.inject.InjectView;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -24,9 +28,6 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LoginServerCommu
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivityIntentFactory;
-import roboguice.activity.RoboActivity;
-import roboguice.inject.ContextScopedProvider;
-import roboguice.inject.InjectView;
 
 /**
  * Activity for login
@@ -71,65 +72,6 @@ public class LoginActivity extends RoboActivity {
 
     private AnimationRunnable animationRunnable;
 
-    private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-
-            emailEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    emailEditText.setError(null);
-                }
-            });
-
-            passwordEdittext.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    passwordEdittext.setError(null);
-                }
-            });
-
-            boolean loginValid = true;
-            if (!isEmailValid()) {
-                emailEditText.setError(getString(R.string.email_validation_error));
-                loginValid = false;
-            }
-            if (!isPasswordNotEmpty()) {
-                passwordEdittext.setError(getString(R.string.password_validation_error));
-                loginValid = false;
-            }
-            if (loginValid) {
-                if (getCurrentFocus() != null) {
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                }
-                localSettingsService.setEmailAddress(emailEditText.getText().toString());
-                localSettingsService.setPassword(passwordEdittext.getText().toString());
-                startLoginCommunication();
-            }
-        }
-    };
-
     private GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse> statusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse>() {
         @Override
         public void onPreExecute() throws Exception {
@@ -162,6 +104,75 @@ public class LoginActivity extends RoboActivity {
             loginButton.setVisibility(View.VISIBLE);
         }
     };
+
+    private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            setupTextWatchers();
+            login(validate());
+        }
+    };
+
+    private void login(boolean loginValid) {
+        if (loginValid) {
+            if (getCurrentFocus() != null) {
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+            localSettingsService.setEmailAddress(emailEditText.getText().toString());
+            localSettingsService.setPassword(passwordEdittext.getText().toString());
+            startLoginCommunication();
+        }
+    }
+
+    private boolean validate() {
+        boolean loginValid = true;
+        if (!isEmailValid()) {
+            emailEditText.setError(getString(R.string.email_validation_error));
+            loginValid = false;
+        }
+        if (!isPasswordNotEmpty()) {
+            passwordEdittext.setError(getString(R.string.password_validation_error));
+            loginValid = false;
+        }
+        return loginValid;
+    }
+
+    private void setupTextWatchers() {
+        emailEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //NOP
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //NOP
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                emailEditText.setError(null);
+            }
+        });
+
+        passwordEdittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //NOP
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //NOP
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                passwordEdittext.setError(null);
+            }
+        });
+    }
 
     private void startLoginCommunication() {
         LoginServerCommunicationTask loginTask = loginServerCommunicationTaskProvider.get(this);
@@ -203,7 +214,7 @@ public class LoginActivity extends RoboActivity {
     private class AnimationRunnable implements Runnable {
 
         private static final float OVERSHOOT_RATIO = 1.6f;
-        private static final float STEPS = ANIMATION_TIME_MS / ANIMATION_FRAME_DELAY;
+        private static final int STEPS = ANIMATION_TIME_MS / ANIMATION_FRAME_DELAY;
 
         private int frameCount = 0;
 
@@ -232,7 +243,7 @@ public class LoginActivity extends RoboActivity {
 
         @Override
         public void run() {
-            acLogoImage.setX(initX + deltaX * interpolator.getInterpolation(frameCount / STEPS));
+            acLogoImage.setX(initX + deltaX * interpolator.getInterpolation(((float) frameCount) / STEPS));
             acLogoImage.invalidate();
             if (frameCount < STEPS) {
                 frameCount++;

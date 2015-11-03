@@ -8,21 +8,21 @@ public class SimpleStatusHandler<T> implements GenericServerCommunicationTask.Co
 
     @Override
     public void onPreExecute() throws Exception {
-
+        //Default implementation. Override if needed.
     }
 
     @Override
     public void onSuccess(T t) throws Exception {
-
+        //Default implementation. Override if needed.
     }
 
     @Override
     public void onThrowable(Throwable t) throws RuntimeException {
-
+        //Default implementation. Override if needed.
     }
 
     @Override
     public void onFinally() throws RuntimeException {
-
+        //Default implementation. Override if needed.
     }
 }
