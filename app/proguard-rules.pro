@@ -86,11 +86,6 @@
 -keep public class AnnotationDatabaseImpl
 -keep class hu.bme.simonyi.acstudio.analogchaosinventoryapp.inject.AnalogChaosModule
 
--dontwarn org.springframework.http.converter.xml.**
--dontwarn org.springframework.http.converter.feed.**
-
--dontwarn org.springframework.http.client.**
-
 -keepnames class org.codehaus.jackson.** { *; }
 -dontwarn org.codehaus.jackson.map.ext.**
 -dontwarn com.fasterxml.jackson.**
@@ -99,3 +94,13 @@
 -keep class com.couchbase.lite.android.AndroidLogger { *; }
 -keep class com.couchbase.lite.android.AndroidSQLiteStorageEngine { *; }
 -dontwarn com.couchbase.**
+
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+-keep class com.squareup.okhttp.** { *;}
+-keep interface com.squareup.okhttp.** { *;}
+-keep class hu.bme.simonyi.acstudio.analogchaosinventoryapp.** { *; }
+-keep interface hu.bme.simonyi.acstudio.analogchaosinventoryapp.** { *; }
