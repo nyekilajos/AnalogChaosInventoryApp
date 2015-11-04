@@ -1,5 +1,9 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home;
 
+import roboguice.activity.RoboActionBarActivity;
+import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -14,15 +18,11 @@ import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutResponse;
-import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.CommunicationStatusHandler;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LogoutServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments.ScanFragment;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login.LoginActivity;
-import roboguice.activity.RoboActionBarActivity;
-import roboguice.fragment.RoboFragment;
-import roboguice.inject.ContextScopedProvider;
-import roboguice.inject.InjectView;
 
 /**
  * Home Activity which hosts the fragments of the main features.
@@ -40,16 +40,16 @@ public class HomeActivity extends RoboActionBarActivity {
     private DialogFactory dialogFactory;
 
     @Inject
-    private ContextScopedProvider<LogoutServerCommunicationTask> logoutServerCommunicationTaskContextScopedProvider;
+    private LogoutServerCommunicationTask logoutServerCommunicationTask;
 
-    private GenericServerCommunicationTask.CommunicationStatusHandler<LogoutResponse> statusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<LogoutResponse>() {
+    private final CommunicationStatusHandler<LogoutResponse> statusHandler = new CommunicationStatusHandler<LogoutResponse>() {
         @Override
-        public void onPreExecute() throws Exception {
+        public void onPreExecute() {
             setSupportProgressBarIndeterminateVisibility(true);
         }
 
         @Override
-        public void onSuccess(LogoutResponse logoutResponse) throws Exception {
+        public void onSuccess(LogoutResponse logoutResponse) {
             if (logoutResponse.isSuccess()) {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             } else {
@@ -81,7 +81,8 @@ public class HomeActivity extends RoboActionBarActivity {
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer_content_desc, R.string.close_drawer_content_desc);
         drawerLayout.setDrawerListener(drawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setDrawerItemSelectedListener(new NavigationDrawerFragment.DrawerItemSelectedListener() {
             @Override
             public void onDrawerItemSelected(View view, int position) {
@@ -107,9 +108,8 @@ public class HomeActivity extends RoboActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled;
         if (item.getItemId() == R.id.menu_logout) {
-            LogoutServerCommunicationTask logoutTask = logoutServerCommunicationTaskContextScopedProvider.get(this);
-            logoutTask.setStatusHandler(statusHandler);
-            logoutTask.logout();
+            logoutServerCommunicationTask.setStatusHandler(statusHandler);
+            logoutServerCommunicationTask.logout();
             handled = true;
         } else {
             handled = drawerToggle.onOptionsItemSelected(item);

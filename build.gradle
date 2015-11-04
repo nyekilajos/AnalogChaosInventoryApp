@@ -27,6 +27,9 @@ allprojects {
         maven {
             url "http://repo1.maven.org/maven2/"
         }
+        maven {
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
     }
 }
 

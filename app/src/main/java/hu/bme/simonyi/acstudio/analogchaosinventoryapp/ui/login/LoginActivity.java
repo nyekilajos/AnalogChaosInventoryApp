@@ -1,7 +1,6 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.login;
 
 import roboguice.activity.RoboActivity;
-import roboguice.inject.ContextScopedProvider;
 import roboguice.inject.InjectView;
 
 import android.os.Bundle;
@@ -23,7 +22,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.Logger;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.LoggerFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
-import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.CommunicationStatusHandler;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LoginServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
@@ -51,7 +50,7 @@ public class LoginActivity extends RoboActivity {
     private EditText emailEditText;
 
     @InjectView(R.id.edit_password_login)
-    private EditText passwordEdittext;
+    private EditText passwordEditText;
 
     @InjectView(R.id.btn_login)
     private Button loginButton;
@@ -63,7 +62,7 @@ public class LoginActivity extends RoboActivity {
     private InputMethodManager inputMethodManager;
 
     @Inject
-    private ContextScopedProvider<LoginServerCommunicationTask> loginServerCommunicationTaskProvider;
+    private LoginServerCommunicationTask loginServerCommunicationTask;
 
     @Inject
     private LocalSettingsService localSettingsService;
@@ -72,22 +71,22 @@ public class LoginActivity extends RoboActivity {
 
     private AnimationRunnable animationRunnable;
 
-    private GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse> statusHandler = new GenericServerCommunicationTask.CommunicationStatusHandler<LoginResponse>() {
+    private final CommunicationStatusHandler<LoginResponse> statusHandler = new CommunicationStatusHandler<LoginResponse>() {
         @Override
-        public void onPreExecute() throws Exception {
+        public void onPreExecute() {
             loginButton.setVisibility(View.GONE);
             loginProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
-        public void onSuccess(LoginResponse loginResponse) throws Exception {
+        public void onSuccess(LoginResponse loginResponse) {
             LOGGER.debug("Login request successful");
             if (loginResponse.isSuccess()) {
                 startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
                 finish();
             } else {
                 emailEditText.setError(getString(R.string.wrong_email_or_pass));
-                passwordEdittext.setError(getString(R.string.wrong_email_or_pass));
+                passwordEditText.setError(getString(R.string.wrong_email_or_pass));
                 dialogFactory.createAlertDialog(getString(R.string.wrong_credentials_alert)).show();
             }
         }
@@ -105,7 +104,7 @@ public class LoginActivity extends RoboActivity {
         }
     };
 
-    private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onLoginClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -120,7 +119,7 @@ public class LoginActivity extends RoboActivity {
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }
             localSettingsService.setEmailAddress(emailEditText.getText().toString());
-            localSettingsService.setPassword(passwordEdittext.getText().toString());
+            localSettingsService.setPassword(passwordEditText.getText().toString());
             startLoginCommunication();
         }
     }
@@ -132,7 +131,7 @@ public class LoginActivity extends RoboActivity {
             loginValid = false;
         }
         if (!isPasswordNotEmpty()) {
-            passwordEdittext.setError(getString(R.string.password_validation_error));
+            passwordEditText.setError(getString(R.string.password_validation_error));
             loginValid = false;
         }
         return loginValid;
@@ -156,7 +155,7 @@ public class LoginActivity extends RoboActivity {
             }
         });
 
-        passwordEdittext.addTextChangedListener(new TextWatcher() {
+        passwordEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //NOP
@@ -169,19 +168,18 @@ public class LoginActivity extends RoboActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                passwordEdittext.setError(null);
+                passwordEditText.setError(null);
             }
         });
     }
 
     private void startLoginCommunication() {
-        LoginServerCommunicationTask loginTask = loginServerCommunicationTaskProvider.get(this);
-        loginTask.setStatusHandler(statusHandler);
-        loginTask.login(emailEditText.getText().toString(), passwordEdittext.getText().toString());
+        loginServerCommunicationTask.setStatusHandler(statusHandler);
+        loginServerCommunicationTask.login(emailEditText.getText().toString(), passwordEditText.getText().toString());
     }
 
     private boolean isPasswordNotEmpty() {
-        return !passwordEdittext.getText().toString().isEmpty();
+        return !passwordEditText.getText().toString().isEmpty();
     }
 
     private boolean isEmailValid() {
@@ -222,7 +220,7 @@ public class LoginActivity extends RoboActivity {
 
         private float deltaX;
         private float initX;
-        private OvershootInterpolator interpolator = new OvershootInterpolator(OVERSHOOT_RATIO);
+        private final OvershootInterpolator interpolator = new OvershootInterpolator(OVERSHOOT_RATIO);
 
         private Handler handler;
 

@@ -1,163 +1,52 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task;
 
-import android.content.Context;
-
-import com.google.gson.GsonBuilder;
-import com.google.inject.Inject;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import roboguice.util.RoboAsyncTask;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationException;
 
 /**
  * Generic AsyncTask for server communication.
  *
  * @author Lajos Nyeki
  */
-public class GenericServerCommunicationTask<T, U> extends RoboAsyncTask<U> {
+public abstract class GenericServerCommunicationTask<T> {
 
-    public static final String AC_API_ENDPONT = "https://acstudio.sch.bme.hu/api";
-    public static final String AC_API_VERSION = "/1.0";
+    private CommunicationStatusHandler<T> statusHandler;
 
-    public static final String AC_API_ACCOUNT_MODULE = "/account";
-    public static final String AC_API_ITEMS_MODULE = "/items";
-
-    private String serverUrl;
-    private HttpMethod httpMethod;
-    private HttpEntity<T> requestEntity;
-    private Class<U> responseType;
-    private CommunicationStatusHandler<U> statusHandler;
-
-
-    @Inject
-    protected GenericServerCommunicationTask(Context context) {
-        super(context);
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    public void setHttpMethod(HttpMethod httpMethod) {
-        this.httpMethod = httpMethod;
-    }
-
-    public void setRequestEntity(HttpEntity<T> requestEntity) {
-        this.requestEntity = requestEntity;
-    }
-
-    public void setResponseType(Class<U> responseType) {
-        this.responseType = responseType;
-    }
-
-    public void setStatusHandler(CommunicationStatusHandler<U> statusHandler) {
+    public void setStatusHandler(CommunicationStatusHandler<T> statusHandler) {
         this.statusHandler = statusHandler;
     }
 
-    /**
-     * Creates appropriate http headers for JSON communication.
-     *
-     * @return HttpHeaders for JSON
-     */
-    protected HttpHeaders getJsonHttpHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
-    }
-
-    @Override
-    public U call() throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
-        setupRestTemplate(restTemplate);
-        ResponseEntity<U> response = restTemplate.exchange(serverUrl, httpMethod, requestEntity, responseType);
-        return response.getBody();
-    }
-
-    private void setupRestTemplate(RestTemplate restTemplate) {
-        GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
-        converter.setGson(new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create());
-        List<HttpMessageConverter<?>> converterList = new ArrayList<>();
-        converterList.add(converter);
-        restTemplate.setMessageConverters(converterList);
-    }
-
-    @Override
-    protected void onPreExecute() throws Exception {
-        super.onPreExecute();
+    protected void execute() {
         if (statusHandler != null) {
             statusHandler.onPreExecute();
         }
+        doRequest(new RetrofitCallback<>());
     }
 
-    @Override
-    protected void onSuccess(U t) throws Exception {
-        super.onSuccess(t);
-        if (statusHandler != null) {
-            statusHandler.onSuccess(t);
+    protected abstract void doRequest(Callback<T> callback);
+
+    private final class RetrofitCallback<U extends T> implements Callback<U> {
+
+        @Override
+        public void onResponse(Response<U> response, Retrofit retrofit) {
+            if (statusHandler != null) {
+                if (response.isSuccess()) {
+                    statusHandler.onSuccess(response.body());
+                } else {
+                    statusHandler.onThrowable(new ServerCommunicationException(response.code(), response.message()));
+                }
+                statusHandler.onFinally();
+            }
         }
-    }
 
-    @Override
-    protected void onThrowable(Throwable t) throws RuntimeException {
-        super.onThrowable(t);
-        if (statusHandler != null) {
-            statusHandler.onThrowable(t);
+        @Override
+        public void onFailure(Throwable t) {
+            if (statusHandler != null) {
+                statusHandler.onThrowable(t);
+                statusHandler.onFinally();
+            }
         }
-    }
-
-    @Override
-    protected void onFinally() throws RuntimeException {
-        super.onFinally();
-        if (statusHandler != null) {
-            statusHandler.onFinally();
-        }
-    }
-
-    /**
-     * Status handler for server communication tasks.
-     *
-     * @param <T> The type of the response used in the server communication task.
-     */
-    public interface CommunicationStatusHandler<T> {
-
-        /**
-         * This method called before the server communication starts. It runs on the UI thread.
-         *
-         * @throws Exception
-         */
-        void onPreExecute() throws Exception;
-
-        /**
-         * This method called when the server communication was successful. It runs on the UI thread.
-         *
-         * @param t The response of the server communication.
-         * @throws Exception
-         */
-        void onSuccess(T t) throws Exception;
-
-        /**
-         * This method called when some problem occurred during the server communication. It runs on the UI thread.
-         *
-         * @param t The throwable object that contains the problem.
-         * @throws RuntimeException
-         */
-        void onThrowable(Throwable t) throws RuntimeException;
-
-        /**
-         * This method called always after the server communication. It runs on the UI thread.
-         *
-         * @throws RuntimeException
-         */
-        void onFinally() throws RuntimeException;
     }
 }

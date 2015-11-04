@@ -1,12 +1,14 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task;
 
-import android.content.Context;
+import java.io.IOException;
+
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import com.google.inject.Inject;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationHelper;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
@@ -16,21 +18,16 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsSer
  *
  * @author Lajos Nyeki
  */
-public class LoginServerCommunicationTask extends GenericServerCommunicationTask<LoginRequest, LoginResponse> {
+public class LoginServerCommunicationTask extends GenericServerCommunicationTask<LoginResponse> {
 
-    private static final String AC_API_LOGIN_METHOD = "/login";
     private static final String REMEMBERME = "no";
 
     @Inject
     private LocalSettingsService localSettingsService;
-
     @Inject
-    protected LoginServerCommunicationTask(Context context) {
-        super(context);
-        setHttpMethod(HttpMethod.POST);
-        setResponseType(LoginResponse.class);
-        setServerUrl(AC_API_ENDPONT + AC_API_VERSION + AC_API_ACCOUNT_MODULE + AC_API_LOGIN_METHOD);
-    }
+    private ServerCommunicationHelper serverCommunicationHelper;
+
+    private LoginRequest loginRequest;
 
     /**
      * Creates a login request and executes it, as well.
@@ -39,24 +36,40 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
      * @param password The password of the user.
      */
     public void login(String email, String password) {
-        LoginRequest loginRequest = new LoginRequest(email, password, REMEMBERME);
-        setRequestEntity(new HttpEntity<>(loginRequest, getJsonHttpHeaders()));
+        loginRequest = new LoginRequest(email, password, REMEMBERME);
         execute();
     }
 
     /**
      * Refreshes the session code with the user data stored in the local settings without creating a new thread.
      */
-    public void refreshSessionSynchronous() throws Exception {
+    public void refreshSessionSynchronous() {
         LoginRequest loginRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(), REMEMBERME);
-        setRequestEntity(new HttpEntity<>(loginRequest, getJsonHttpHeaders()));
-        call();
+        try {
+            LoginResponse response = serverCommunicationHelper.loginSynchronous(loginRequest);
+            localSettingsService.setSessionCode(response.getResult());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public LoginResponse call() throws Exception {
-        LoginResponse loginResponse = super.call();
-        localSettingsService.setSessionCode(loginResponse.getResult());
-        return loginResponse;
+    protected void doRequest(final Callback<LoginResponse> callback) {
+        Callback<LoginResponse> callbackDecorator = new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                if (response.isSuccess() && response.body().isSuccess()) {
+                    localSettingsService.setSessionCode(response.body().getResult());
+                }
+                callback.onResponse(response, retrofit);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                callback.onFailure(t);
+            }
+        };
+        serverCommunicationHelper.login(loginRequest, callbackDecorator);
+
     }
 }

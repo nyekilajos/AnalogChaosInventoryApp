@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
-import roboguice.inject.ContextScopedProvider;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +24,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.inventory.TreeCreator;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.Logger;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.LoggerFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.ItemsListResponse;
-import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.GenericServerCommunicationTask;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.CommunicationStatusHandler;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.ItemsListServerCommunicationTask;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.SimpleStatusHandler;
 
@@ -51,19 +50,19 @@ public class InventoryFragment extends RoboFragment {
     private AndroidTreeView treeView;
 
     @Inject
-    private ContextScopedProvider<ItemsListServerCommunicationTask> itemsListServerCommunicationTaskProvider;
+    private ItemsListServerCommunicationTask itemsListServerCommunicationTask;
 
-    private GenericServerCommunicationTask.CommunicationStatusHandler<ItemsListResponse> itemsListStatusHandler = new SimpleStatusHandler<ItemsListResponse>() {
+    private final CommunicationStatusHandler<ItemsListResponse> itemsListStatusHandler = new SimpleStatusHandler<ItemsListResponse>() {
 
         @Override
-        public void onSuccess(ItemsListResponse itemsListResponse) throws Exception {
+        public void onSuccess(ItemsListResponse itemsListResponse) {
             if (isVisible()) {
                 refreshTreeView();
             }
         }
 
         @Override
-        public void onThrowable(Throwable t) throws RuntimeException {
+        public void onThrowable(Throwable t) {
             if (isVisible()) {
                 Toast.makeText(getActivity(), getString(R.string.error_items_list), Toast.LENGTH_LONG).show();
             }
@@ -114,8 +113,6 @@ public class InventoryFragment extends RoboFragment {
     }
 
     private void updateLocalDatabase() {
-        ItemsListServerCommunicationTask itemsListServerCommunicationTask = itemsListServerCommunicationTaskProvider
-                .get(getActivity().getApplicationContext());
         itemsListServerCommunicationTask.setStatusHandler(itemsListStatusHandler);
         itemsListServerCommunicationTask.updateItems();
     }
