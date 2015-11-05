@@ -42,32 +42,6 @@ public class HomeActivity extends RoboActionBarActivity {
     @Inject
     private LogoutServerCommunicationTask logoutServerCommunicationTask;
 
-    private final CommunicationStatusHandler<LogoutResponse> statusHandler = new CommunicationStatusHandler<LogoutResponse>() {
-        @Override
-        public void onPreExecute() {
-            setSupportProgressBarIndeterminateVisibility(true);
-        }
-
-        @Override
-        public void onSuccess(LogoutResponse logoutResponse) {
-            if (logoutResponse.isSuccess()) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            } else {
-                dialogFactory.createAlertDialog("Logout error, please try again later.");
-            }
-        }
-
-        @Override
-        public void onThrowable(Throwable t) throws RuntimeException {
-            dialogFactory.createAlertDialog(getString(R.string.unknown_communication_error)).show();
-        }
-
-        @Override
-        public void onFinally() throws RuntimeException {
-            setSupportProgressBarIndeterminateVisibility(false);
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +82,7 @@ public class HomeActivity extends RoboActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled;
         if (item.getItemId() == R.id.menu_logout) {
-            logoutServerCommunicationTask.setStatusHandler(statusHandler);
+            logoutServerCommunicationTask.setStatusHandler(new LogoutCommunicationStatusHandler());
             logoutServerCommunicationTask.logout();
             handled = true;
         } else {
@@ -122,5 +96,31 @@ public class HomeActivity extends RoboActionBarActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.container_body, fragment).commit();
         getSupportActionBar().setTitle(getString(titleId));
         drawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
+    private final class LogoutCommunicationStatusHandler implements CommunicationStatusHandler<LogoutResponse> {
+        @Override
+        public void onPreExecute() {
+            setSupportProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        public void onSuccess(LogoutResponse logoutResponse) {
+            if (logoutResponse.isSuccess()) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            } else {
+                dialogFactory.createAlertDialog("Logout error, please try again later.");
+            }
+        }
+
+        @Override
+        public void onThrowable(Throwable t) {
+            dialogFactory.createAlertDialog(getString(R.string.unknown_communication_error)).show();
+        }
+
+        @Override
+        public void onFinally() {
+            setSupportProgressBarIndeterminateVisibility(false);
+        }
     }
 }

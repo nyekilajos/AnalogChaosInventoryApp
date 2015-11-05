@@ -71,39 +71,6 @@ public class LoginActivity extends RoboActivity {
 
     private AnimationRunnable animationRunnable;
 
-    private final CommunicationStatusHandler<LoginResponse> statusHandler = new CommunicationStatusHandler<LoginResponse>() {
-        @Override
-        public void onPreExecute() {
-            loginButton.setVisibility(View.GONE);
-            loginProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onSuccess(LoginResponse loginResponse) {
-            LOGGER.debug("Login request successful");
-            if (loginResponse.isSuccess()) {
-                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
-                finish();
-            } else {
-                emailEditText.setError(getString(R.string.wrong_email_or_pass));
-                passwordEditText.setError(getString(R.string.wrong_email_or_pass));
-                dialogFactory.createAlertDialog(getString(R.string.wrong_credentials_alert)).show();
-            }
-        }
-
-        @Override
-        public void onThrowable(Throwable t) throws RuntimeException {
-            LOGGER.error(t.toString());
-            dialogFactory.createAlertDialog(getString(R.string.unknown_communication_error)).show();
-        }
-
-        @Override
-        public void onFinally() throws RuntimeException {
-            loginProgressBar.setVisibility(View.GONE);
-            loginButton.setVisibility(View.VISIBLE);
-        }
-    };
-
     private final View.OnClickListener onLoginClickListener = new View.OnClickListener() {
 
         @Override
@@ -174,7 +141,7 @@ public class LoginActivity extends RoboActivity {
     }
 
     private void startLoginCommunication() {
-        loginServerCommunicationTask.setStatusHandler(statusHandler);
+        loginServerCommunicationTask.setStatusHandler(new LoginCommunicationStatusHandler());
         loginServerCommunicationTask.login(emailEditText.getText().toString(), passwordEditText.getText().toString());
     }
 
@@ -236,7 +203,7 @@ public class LoginActivity extends RoboActivity {
 
         private void init() {
             deltaX = (fieldsLayout.getWidth() + acLogoImage.getWidth()) / 2.0f;
-            initX = acLogoImage.getWidth() * -1;
+            initX = acLogoImage.getWidth() * -1f;
         }
 
         @Override
@@ -250,6 +217,39 @@ public class LoginActivity extends RoboActivity {
                 fieldsLayout.setVisibility(View.VISIBLE);
                 enabled = false;
             }
+        }
+    }
+
+    private final class LoginCommunicationStatusHandler implements CommunicationStatusHandler<LoginResponse> {
+        @Override
+        public void onPreExecute() {
+            loginButton.setVisibility(View.GONE);
+            loginProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onSuccess(LoginResponse loginResponse) {
+            LOGGER.debug("Login request successful");
+            if (loginResponse.isSuccess()) {
+                startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
+                finish();
+            } else {
+                emailEditText.setError(getString(R.string.wrong_email_or_pass));
+                passwordEditText.setError(getString(R.string.wrong_email_or_pass));
+                dialogFactory.createAlertDialog(getString(R.string.wrong_credentials_alert)).show();
+            }
+        }
+
+        @Override
+        public void onThrowable(Throwable t) {
+            LOGGER.error(t.toString());
+            dialogFactory.createAlertDialog(getString(R.string.unknown_communication_error)).show();
+        }
+
+        @Override
+        public void onFinally() {
+            loginProgressBar.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
         }
     }
 }

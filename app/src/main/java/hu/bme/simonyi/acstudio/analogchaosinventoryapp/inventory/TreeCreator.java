@@ -56,7 +56,7 @@ public class TreeCreator {
         return new TreeNode(createHolderFromItem(item, level)).setViewHolder(inventoryViewHolderProvider.get(context));
     }
 
-    private InventoryViewHolder.InventoryRow createHolderFromItem(Item item, int level) {
+    private static InventoryViewHolder.InventoryRow createHolderFromItem(Item item, int level) {
         InventoryViewHolder.InventoryRow inventoryRow = new InventoryViewHolder.InventoryRow();
         inventoryRow.id = Integer.toString(item.getId());
         inventoryRow.name = item.getName();

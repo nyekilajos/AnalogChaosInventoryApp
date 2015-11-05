@@ -1,5 +1,8 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.fragments;
 
+import roboguice.fragment.RoboFragment;
+import roboguice.inject.InjectView;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,14 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 
 import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.BarcodeScanHelper;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
-import roboguice.fragment.RoboFragment;
-import roboguice.inject.InjectView;
 
 /**
  * Fragment for Scanning barcodes

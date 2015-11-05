@@ -44,9 +44,9 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
      * Refreshes the session code with the user data stored in the local settings without creating a new thread.
      */
     public void refreshSessionSynchronous() {
-        LoginRequest loginRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(), REMEMBERME);
+        LoginRequest refreshSessionRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(), REMEMBERME);
         try {
-            LoginResponse response = serverCommunicationHelper.loginSynchronous(loginRequest);
+            LoginResponse response = serverCommunicationHelper.loginSynchronous(refreshSessionRequest);
             localSettingsService.setSessionCode(response.getResult());
         } catch (IOException e) {
             e.printStackTrace();

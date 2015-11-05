@@ -23,13 +23,11 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
  */
 public class InventoryViewHolder extends TreeNode.BaseNodeViewHolder<InventoryViewHolder.InventoryRow> {
 
-    private Context context;
     private ImageView ivArrow;
 
     @Inject
     public InventoryViewHolder(Context context) {
         super(context);
-        this.context = context;
     }
 
     @Override

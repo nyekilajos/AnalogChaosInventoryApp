@@ -41,30 +41,39 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
 
     @Override
     protected void doRequest(final Callback<ItemsListResponse> callback) {
-        Callback<ItemsListResponse> callbackDecorator = new Callback<ItemsListResponse>() {
-            @Override
-            public void onResponse(Response<ItemsListResponse> response, Retrofit retrofit) {
-                if (response.isSuccess() && response.body().isSuccess()) {
-                    try {
-                        couchbaseLiteHelper.writeItemsToDb(response.body().getResult());
-                        callback.onResponse(response, retrofit);
-                    } catch (CouchbaseLiteException e) {
-                        callback.onFailure(e);
-                    }
-                } else if (response.code() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
-                    loginServerCommunicationTask.refreshSessionSynchronous();
-                    updateItems();
-                } else {
-                    callback.onResponse(response, retrofit);
-                }
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
-                callback.onFailure(t);
-            }
-
-        };
-        serverCommunicationHelper.listItems(itemsListRequest, callbackDecorator);
+        serverCommunicationHelper.listItems(itemsListRequest, new CallbackDecorator(callback));
     }
+
+    private final class CallbackDecorator implements retrofit.Callback<ItemsListResponse> {
+
+        private Callback<ItemsListResponse> callback;
+
+        public CallbackDecorator(Callback<ItemsListResponse> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onResponse(Response<ItemsListResponse> response, Retrofit retrofit) {
+            if (response.isSuccess() && response.body().isSuccess()) {
+                try {
+                    couchbaseLiteHelper.writeItemsToDb(response.body().getResult());
+                    callback.onResponse(response, retrofit);
+                } catch (CouchbaseLiteException e) {
+                    callback.onFailure(e);
+                }
+            } else if (response.code() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
+                loginServerCommunicationTask.refreshSessionSynchronous();
+                updateItems();
+            } else {
+                callback.onResponse(response, retrofit);
+            }
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            callback.onFailure(t);
+        }
+
+    };
 }

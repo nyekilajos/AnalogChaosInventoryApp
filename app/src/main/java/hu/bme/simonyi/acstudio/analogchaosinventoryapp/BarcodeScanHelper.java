@@ -12,7 +12,7 @@ import com.google.inject.Inject;
 import roboguice.inject.ContextSingleton;
 
 /**
- * Helper class for barcode scanning operations
+ * Helper class for barcode scanning operations.
  * @author Lajos Nyeki
  */
 @ContextSingleton
@@ -22,7 +22,7 @@ public class BarcodeScanHelper {
 
     private Context context;
     private Intent scanIntent;
-    
+
     @Inject
     public BarcodeScanHelper (Context context) {
         this.context = context;
