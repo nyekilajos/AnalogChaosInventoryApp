@@ -1,5 +1,7 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.log;
 
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.BuildConfig;
+
 /**
  * Factory class for creating the appropriate Logger
  *
@@ -18,6 +20,11 @@ public class LoggerFactory {
      * @return The appropriate Logger instance
      */
     public static Logger createLogger(Class c) {
-        return new LogcatLogger(c.getName());
+        if (BuildConfig.DEBUG) {
+            return new LogcatLogger(c.getName());
+        } else {
+            return new NullLogger();
+        }
+
     }
 }

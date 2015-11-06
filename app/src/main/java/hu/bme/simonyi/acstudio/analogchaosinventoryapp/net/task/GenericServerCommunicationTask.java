@@ -3,6 +3,8 @@ package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.Logger;
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.log.LoggerFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationException;
 
 /**
@@ -11,6 +13,8 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationEx
  * @author Lajos Nyeki
  */
 public abstract class GenericServerCommunicationTask<T> {
+
+    private static final Logger LOGGER = LoggerFactory.createLogger(GenericServerCommunicationTask.class);
 
     private CommunicationStatusHandler<T> statusHandler;
 
@@ -31,6 +35,8 @@ public abstract class GenericServerCommunicationTask<T> {
 
         @Override
         public void onResponse(Response<U> response, Retrofit retrofit) {
+            LOGGER.debug("Response from server: " + response.message()
+                    + (response.isSuccess() ? "; body: " + response.body() : "; error body: " + response.errorBody()));
             if (statusHandler != null) {
                 if (response.isSuccess()) {
                     statusHandler.onSuccess(response.body());
