@@ -238,6 +238,7 @@ public class LoginActivity extends RoboActivity {
             Answers.getInstance()
                     .logLogin(new LoginEvent().putSuccess(loginResponse.isSuccess()).putCustomAttribute("user", emailEditText.getText().toString()));
             if (loginResponse.isSuccess()) {
+                Crashlytics.setUserEmail(emailEditText.getText().toString());
                 startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
                 finish();
             } else {
