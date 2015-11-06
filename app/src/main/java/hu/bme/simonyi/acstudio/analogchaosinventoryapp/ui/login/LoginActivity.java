@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.google.inject.Inject;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
@@ -27,6 +30,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.LoginServerCommu
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsService;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.dialog.DialogFactory;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.ui.home.HomeActivityIntentFactory;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Activity for login
@@ -156,6 +160,7 @@ public class LoginActivity extends RoboActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         if (localSettingsService.getSessionCode().isEmpty()) {
             initForLogin();
         } else {
@@ -230,6 +235,8 @@ public class LoginActivity extends RoboActivity {
         @Override
         public void onSuccess(LoginResponse loginResponse) {
             LOGGER.debug("Login request successful");
+            Answers.getInstance()
+                    .logLogin(new LoginEvent().putSuccess(loginResponse.isSuccess()).putCustomAttribute("user", emailEditText.getText().toString()));
             if (loginResponse.isSuccess()) {
                 startActivity(HomeActivityIntentFactory.createHomeActivityIntent(getApplicationContext()));
                 finish();

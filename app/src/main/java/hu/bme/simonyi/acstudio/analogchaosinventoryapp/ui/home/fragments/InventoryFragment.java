@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.google.inject.Inject;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -78,6 +80,7 @@ public class InventoryFragment extends RoboFragment {
         refreshTreeView();
         restoreTreeViewState(savedInstanceState);
         updateLocalDatabase();
+        Answers.getInstance().logContentView(new ContentViewEvent().putContentName(InventoryFragment.TAG));
         return view;
     }
 
