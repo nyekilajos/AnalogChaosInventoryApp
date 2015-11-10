@@ -21,6 +21,9 @@ public class LoginResponse extends GenericServerResponse<String> {
         }
     };
 
+    public LoginResponse() {
+    }
+
     private LoginResponse(Parcel in) {
         readCommonDataFromParcel(in);
         setResult(in.readString());
@@ -33,7 +36,7 @@ public class LoginResponse extends GenericServerResponse<String> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        writeCommonDataToParecel(dest);
+        writeCommonDataToParcel(dest);
         dest.writeString(getResult());
     }
 }

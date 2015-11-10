@@ -21,6 +21,9 @@ public class LogoutResponse extends GenericServerResponse<Void> {
         }
     };
 
+    public LogoutResponse() {
+    }
+
     public LogoutResponse(Parcel in) {
         readCommonDataFromParcel(in);
     }
@@ -32,6 +35,6 @@ public class LogoutResponse extends GenericServerResponse<Void> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        writeCommonDataToParecel(dest);
+        writeCommonDataToParcel(dest);
     }
 }

@@ -20,4 +20,8 @@ public class ServerCommunicationException extends IOException {
     public String getMessage() {
         return "Error code: " + errorCode + ", " + super.getMessage();
     }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
 }

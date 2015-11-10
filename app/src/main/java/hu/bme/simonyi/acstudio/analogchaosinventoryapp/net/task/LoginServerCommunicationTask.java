@@ -20,14 +20,18 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsSer
  */
 public class LoginServerCommunicationTask extends GenericServerCommunicationTask<LoginResponse> {
 
-    private static final String REMEMBERME = "no";
+    private static final String REMEMBER_ME = "no";
 
-    @Inject
-    private LocalSettingsService localSettingsService;
-    @Inject
-    private ServerCommunicationHelper serverCommunicationHelper;
+    private final LocalSettingsService localSettingsService;
+    private final ServerCommunicationHelper serverCommunicationHelper;
 
     private LoginRequest loginRequest;
+
+    @Inject
+    public LoginServerCommunicationTask(LocalSettingsService localSettingsService, ServerCommunicationHelper serverCommunicationHelper) {
+        this.localSettingsService = localSettingsService;
+        this.serverCommunicationHelper = serverCommunicationHelper;
+    }
 
     /**
      * Creates a login request and executes it, as well.
@@ -36,7 +40,7 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
      * @param password The password of the user.
      */
     public void login(String email, String password) {
-        loginRequest = new LoginRequest(email, password, REMEMBERME);
+        loginRequest = new LoginRequest(email, password, REMEMBER_ME);
         execute();
     }
 
@@ -44,7 +48,8 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
      * Refreshes the session code with the user data stored in the local settings without creating a new thread.
      */
     public void refreshSessionSynchronous() {
-        LoginRequest refreshSessionRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(), REMEMBERME);
+        LoginRequest refreshSessionRequest = new LoginRequest(localSettingsService.getEmailAddress(), localSettingsService.getPassword(),
+                REMEMBER_ME);
         try {
             LoginResponse response = serverCommunicationHelper.loginSynchronous(refreshSessionRequest);
             localSettingsService.setSessionCode(response.getResult());
