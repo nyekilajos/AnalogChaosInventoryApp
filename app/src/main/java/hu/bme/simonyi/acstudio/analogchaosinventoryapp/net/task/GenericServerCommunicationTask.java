@@ -15,7 +15,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.GenericServerResp
  */
 public abstract class GenericServerCommunicationTask<T extends GenericServerResponse<?>> {
 
-    private static final Logger LOGGER = LoggerFactory.createLogger(GenericServerCommunicationTask.class);
+    protected static final Logger LOGGER = LoggerFactory.createLogger(GenericServerCommunicationTask.class);
 
     private CommunicationStatusHandler<T> statusHandler;
 

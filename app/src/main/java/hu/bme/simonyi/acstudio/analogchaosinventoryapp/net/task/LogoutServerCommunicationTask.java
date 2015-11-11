@@ -18,14 +18,19 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsSer
  */
 public class LogoutServerCommunicationTask extends GenericServerCommunicationTask<LogoutResponse> {
 
-    @Inject
-    private LocalSettingsService localSettingsService;
-    @Inject
-    private LoginServerCommunicationTask loginServerCommunicationTask;
-    @Inject
-    private ServerCommunicationHelper serverCommunicationHelper;
+    private final LocalSettingsService localSettingsService;
+    private final LoginServerCommunicationTask loginServerCommunicationTask;
+    private final ServerCommunicationHelper serverCommunicationHelper;
 
     private LogoutRequest logoutRequest;
+
+    @Inject
+    public LogoutServerCommunicationTask(LocalSettingsService localSettingsService, LoginServerCommunicationTask loginServerCommunicationTask,
+            ServerCommunicationHelper serverCommunicationHelper) {
+        this.localSettingsService = localSettingsService;
+        this.loginServerCommunicationTask = loginServerCommunicationTask;
+        this.serverCommunicationHelper = serverCommunicationHelper;
+    }
 
     /**
      * Logs out the already authenticated user. If logout was successful, this method deletes the user database.
@@ -43,7 +48,7 @@ public class LogoutServerCommunicationTask extends GenericServerCommunicationTas
                 if (response.isSuccess() && response.body().isSuccess()) {
                     localSettingsService.reset();
                     callback.onResponse(response, retrofit);
-                } else if (response.code() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
+                } else if (response.isSuccess() && response.body().getCode() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
                     loginServerCommunicationTask.refreshSessionSynchronous();
                     logout();
                 } else {

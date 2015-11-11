@@ -1,5 +1,6 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task;
 
+import static hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.task.ServerCommunicationTestConstants.CODE_ERROR;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -30,8 +31,6 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LogoutResponse;
 @Config(constants = BuildConfig.class)
 public class GenericServerCommunicationTaskTest {
 
-    private static final int CODE_ERROR = 500;
-
     @Mock
     private CommunicationStatusHandler<LogoutResponse> statusHandler;
 
@@ -58,6 +57,17 @@ public class GenericServerCommunicationTaskTest {
             @Override
             protected void doRequest(Callback<LogoutResponse> callback) {
                 callback.onResponse(successResponse, null);
+            }
+        };
+        sut.execute();
+    }
+
+    @Test
+    public void testExecuteNotSuccessfullyWithoutStatusHandler() {
+        sut = new GenericServerCommunicationTask<LogoutResponse>() {
+            @Override
+            protected void doRequest(Callback<LogoutResponse> callback) {
+                callback.onResponse(errorResponse, null);
             }
         };
         sut.execute();

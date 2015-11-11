@@ -20,16 +20,21 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.settings.LocalSettingsSer
  */
 public class ItemsListServerCommunicationTask extends GenericServerCommunicationTask<ItemsListResponse> {
 
-    @Inject
-    private CouchbaseLiteHelper couchbaseLiteHelper;
-    @Inject
-    private LocalSettingsService localSettingsService;
-    @Inject
-    private LoginServerCommunicationTask loginServerCommunicationTask;
-    @Inject
-    private ServerCommunicationHelper serverCommunicationHelper;
+    private final CouchbaseLiteHelper couchbaseLiteHelper;
+    private final LocalSettingsService localSettingsService;
+    private final LoginServerCommunicationTask loginServerCommunicationTask;
+    private final ServerCommunicationHelper serverCommunicationHelper;
 
     private ItemsListRequest itemsListRequest;
+
+    @Inject
+    public ItemsListServerCommunicationTask(CouchbaseLiteHelper couchbaseLiteHelper, LocalSettingsService localSettingsService,
+            LoginServerCommunicationTask loginServerCommunicationTask, ServerCommunicationHelper serverCommunicationHelper) {
+        this.couchbaseLiteHelper = couchbaseLiteHelper;
+        this.localSettingsService = localSettingsService;
+        this.loginServerCommunicationTask = loginServerCommunicationTask;
+        this.serverCommunicationHelper = serverCommunicationHelper;
+    }
 
     /**
      * Updates the local inventory database from web.
@@ -47,7 +52,7 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
 
     private final class CallbackDecorator implements retrofit.Callback<ItemsListResponse> {
 
-        private Callback<ItemsListResponse> callback;
+        private final Callback<ItemsListResponse> callback;
 
         public CallbackDecorator(Callback<ItemsListResponse> callback) {
             this.callback = callback;
@@ -62,7 +67,7 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
                 } catch (CouchbaseLiteException e) {
                     callback.onFailure(e);
                 }
-            } else if (response.code() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
+            } else if (response.isSuccess() && response.body().getCode() == ServerCommunicationHelper.HTTP_UNAUTHORIZED) {
                 loginServerCommunicationTask.refreshSessionSynchronous();
                 updateItems();
             } else {
@@ -75,5 +80,5 @@ public class ItemsListServerCommunicationTask extends GenericServerCommunication
             callback.onFailure(t);
         }
 
-    };
+    }
 }

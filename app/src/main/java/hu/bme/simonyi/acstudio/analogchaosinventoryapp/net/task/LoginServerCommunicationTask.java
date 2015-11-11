@@ -8,6 +8,7 @@ import retrofit.Retrofit;
 
 import com.google.inject.Inject;
 
+import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationException;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.ServerCommunicationHelper;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginRequest;
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto.LoginResponse;
@@ -52,9 +53,13 @@ public class LoginServerCommunicationTask extends GenericServerCommunicationTask
                 REMEMBER_ME);
         try {
             LoginResponse response = serverCommunicationHelper.loginSynchronous(refreshSessionRequest);
-            localSettingsService.setSessionCode(response.getResult());
+            if (response.isSuccess()) {
+                localSettingsService.setSessionCode(response.getResult());
+            } else {
+                throw new ServerCommunicationException(response.getCode(), response.getText());
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
     }
 
