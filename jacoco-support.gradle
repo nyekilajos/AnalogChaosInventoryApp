@@ -26,4 +26,35 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
     }
 }
 
+task jacocoMergeUiAndUnitTests(type: JacocoMerge, dependsOn: "jacocoTestReport") {
+    group = "Reporting"
+    description = "Merge Jacoco coverage exec files."
+    destinationFile = file('build/outputs/code-coverage/merged/merged.exec')
+    executionData = files('build/jacoco/testDebugUnitTest.exec')
+    executionData += files('build/outputs/code-coverage/connected/coverage.ec')
+}
+
+task jacocoCreateMergedReport(type: JacocoReport, dependsOn: "jacocoMergeUiAndUnitTests") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports from the merged exec file."
+    reports {
+        html.enabled = true
+        html.destination = "build/outputs/code-coverage/merged/report"
+    }
+    classDirectories = fileTree(
+            dir: 'build/intermediates/classes/debug',
+            excludes: ['**/R*.class',
+                       '**/BuildConfig*'])
+    sourceDirectories = files('src/main/java')
+    executionData = files('build/outputs/code-coverage/merged/merged.exec')
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.equals("connectedAndroidTest")) {
+        tasks.jacocoMergeUiAndUnitTests.dependsOn(task)
+        println("jacocoMergeUiAndUnitTests dependency added.")
+    }
+}
+
 tasks.check.dependsOn(project.tasks.getByName("jacocoTestReport"))
+tasks.connectedCheck.dependsOn(project.tasks.getByName("jacocoCreateMergedReport"))
