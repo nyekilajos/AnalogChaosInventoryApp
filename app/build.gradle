@@ -14,6 +14,7 @@ android {
         targetSdkVersion 23
         versionCode versionCodeTimeStamp
         versionName "${acAppVersion}.${versionNameForBuild}"
+        setProperty("archivesBaseName", "ac-app-${acAppVersion}")
         resValue("string", "appversion", "${acAppVersion}.${versionNameForBuild}")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -80,24 +81,6 @@ dexcount {
     printAsTree = false
     orderByMethodCount = false
     verbose = false
-}
-
-android.applicationVariants.all { variant ->
-    def name
-    variant.outputs.each { output ->
-        def apkDirectory = output.packageApplication.outputFile.parentFile
-        def additionalTags = ''
-        if (variant.baseName.contains("debug")) {
-            additionalTags += '-debug'
-        }
-        if (output.zipAlign) {
-            def signAlignInfo = variant.buildType.name == "release" ? "-signed-aligned" : "-UNALIGNED"
-            name = "ac-app${additionalTags}-${acAppVersion}${signAlignInfo}.apk"
-            output.outputFile = new File(apkDirectory, name);
-        }
-        name = "ac-app${additionalTags}-${acAppVersion}-UNALIGNED.apk"
-        output.packageApplication.outputFile = new File(apkDirectory, name);
-    }
 }
 
 dependencies {
