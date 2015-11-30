@@ -21,9 +21,9 @@ public class SharedPreferencesHelper implements LocalSettingsService {
 
     private static final String USER_DATA_SETTINGS = "UserInfoSettings";
 
-    private static final String USER_EMAIL_ADDRESS = "UserName";
-    private static final String USER_PASSWORD = "UserPassword";
-    private static final String USER_SESSION_CODE = "UserSessionCode";
+    private static final String USER_EMAIL_ADDRESS_FIELD = "UserName";
+    private static final String USER_PASSWORD_FIELD = "UserPassword";
+    private static final String USER_SESSION_CODE_FIELD = "UserSessionCode";
 
     private static final String DATABASE_DATA_SETTINGS = "DatabaseDataSettings";
 
@@ -45,33 +45,33 @@ public class SharedPreferencesHelper implements LocalSettingsService {
 
     @Override
     public String getEmailAddress() {
-        return userDataSettings.getString(USER_EMAIL_ADDRESS, "");
+        return userDataSettings.getString(USER_EMAIL_ADDRESS_FIELD, "");
     }
 
     @Override
     public void setEmailAddress(String emailAddress) {
-        userDataSettings.edit().putString(USER_EMAIL_ADDRESS, emailAddress).apply();
+        userDataSettings.edit().putString(USER_EMAIL_ADDRESS_FIELD, emailAddress).apply();
     }
 
     @Override
     public String getPassword() {
-        return userDataSettings.getString(USER_PASSWORD, "");
+        return userDataSettings.getString(USER_PASSWORD_FIELD, "");
     }
 
     @Override
     public void setPassword(String password) {
-        userDataSettings.edit().putString(USER_PASSWORD, password).apply();
+        userDataSettings.edit().putString(USER_PASSWORD_FIELD, password).apply();
     }
 
     @Override
     public String getSessionCode() {
-        return userDataSettings.getString(USER_SESSION_CODE, "");
+        return userDataSettings.getString(USER_SESSION_CODE_FIELD, "");
     }
 
     @Override
     @SuppressLint("CommitPrefEdits")
     public void setSessionCode(String sessionCode) {
-        userDataSettings.edit().putString(USER_SESSION_CODE, sessionCode).commit();
+        userDataSettings.edit().putString(USER_SESSION_CODE_FIELD, sessionCode).commit();
     }
 
     @Override

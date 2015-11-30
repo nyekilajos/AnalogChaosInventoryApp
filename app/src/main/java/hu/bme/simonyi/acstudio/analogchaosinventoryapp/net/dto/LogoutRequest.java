@@ -52,4 +52,22 @@ public class LogoutRequest implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(session);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        LogoutRequest that = (LogoutRequest) o;
+
+        return !(session != null ? !session.equals(that.session) : that.session != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return session != null ? session.hashCode() : 0;
+    }
 }

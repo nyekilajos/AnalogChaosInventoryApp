@@ -1,9 +1,9 @@
 package hu.bme.simonyi.acstudio.analogchaosinventoryapp.net.dto;
 
-import android.os.Parcel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Parcel;
 
 import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.Item;
 
@@ -13,6 +13,9 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.database.Item;
  * @author Lajos Nyeki
  */
 public class ItemsListResponse extends GenericServerResponse<List<Item>> {
+
+    public ItemsListResponse() {
+    }
 
     public ItemsListResponse(Parcel in) {
         readCommonDataFromParcel(in);
@@ -35,10 +38,9 @@ public class ItemsListResponse extends GenericServerResponse<List<Item>> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        writeCommonDataToParecel(dest);
+        writeCommonDataToParcel(dest);
         writeItemsListToParcel(dest, flags);
     }
-
 
     private void writeItemsListToParcel(Parcel dest, int flags) {
         dest.writeInt(getResult().size());
