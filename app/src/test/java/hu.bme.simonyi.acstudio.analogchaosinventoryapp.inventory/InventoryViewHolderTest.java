@@ -29,7 +29,7 @@ import hu.bme.simonyi.acstudio.analogchaosinventoryapp.R;
  * Created by Lajos_Nyeki on 10/14/2015.
  */
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class)
+@Config(constants = BuildConfig.class, shadows = CustomShadowResources.class)
 public class InventoryViewHolderTest {
 
     private static final String TEST_BARCODE = "123456789";
